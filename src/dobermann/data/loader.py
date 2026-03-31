@@ -14,7 +14,7 @@ class DataSet(Enum):
 
 @dataclass
 class Sample:
-    text: list[str]
+    sentences: list[str]
     segment_lengths: list[int]
 
 
@@ -25,10 +25,10 @@ class DataHandler:
             raw_samples = json.load(f)
 
         self.samples = [
-            Sample(text=s["text"], segment_lengths=s["segment_length"])
+            Sample(sentences=s["text"], segment_lengths=s["segment_length"])
             for s in raw_samples
         ]
 
-    def map(self, fn):
-        for sample in self.samples:
-            yield fn(sample)
+    # map might be more important for larger datasets
+    # for now ignore and always batch process
+    # !! transform should be handled by the algorithm, not the data handler
