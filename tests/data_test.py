@@ -8,5 +8,8 @@ def test_data_loading():
 
     sample = ds.samples[0]
 
-    assert isinstance(sample.text, list)
+    # Sentences are list of strings
+    assert isinstance(sample.sentences, list)
+    assert all(isinstance(s, str) for s in sample.sentences)
+
     assert isinstance(sample.segment_lengths, list)
