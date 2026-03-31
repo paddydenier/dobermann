@@ -22,8 +22,11 @@ jobs:
         run: uv sync --dev
 
       - name: Lint with Ruff
-        run: |
-          uv run ruff check src
+        run: uv run ruff check src
 
       - name: Format with Ruff
         run: uv run ruff format --check src
+
+        #TODO: separate workflow?
+      - name: Test with pytest
+        run: uv run pytest
