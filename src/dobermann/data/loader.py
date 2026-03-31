@@ -32,4 +32,3 @@ class DataHandler:
     def map(self, fn):
         for sample in self.samples:
             yield fn(sample)
-

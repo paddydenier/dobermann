@@ -3,7 +3,7 @@ name: CI
 on: [push, pull_request]
 
 jobs:
-  lint:
+  lint-and-format:
     name: python
     runs-on: ubuntu-latest
 
@@ -24,4 +24,6 @@ jobs:
       - name: Lint with Ruff
         run: |
           uv run ruff check src
-          uv run ruff format --check src
+
+      - name: Format with Ruff
+        run: uv run ruff format --check src
