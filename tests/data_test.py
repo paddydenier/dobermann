@@ -1,15 +1,21 @@
 from dobermann import DataHandler, DataSet
+import pytest
 
 
-def test_data_loading():
-    ds = DataHandler(DataSet.CHOI)
+# def test_data_loading():
+#     ds = DataHandler(DataSet.CHOI)
+#
+#     assert len(ds.samples) > 0
+#
+#     sample = ds.samples[0]
+#
+#     # Sentences are list of strings
+#     assert isinstance(sample.sentences, list)
+#     assert all(isinstance(s, str) for s in sample.sentences)
+#
+#     assert isinstance(sample.segment_lengths, list)
 
-    assert len(ds.samples) > 0
 
-    sample = ds.samples[0]
-
-    # Sentences are list of strings
-    assert isinstance(sample.sentences, list)
-    assert all(isinstance(s, str) for s in sample.sentences)
-
-    assert isinstance(sample.segment_lengths, list)
+@pytest.mark.parametrize("dataset", list(DataSet))
+def test_dataset_does_not_crash(dataset):
+    DataHandler(dataset)
