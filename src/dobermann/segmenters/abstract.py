@@ -4,23 +4,27 @@ from abc import ABC, abstractmethod
 # takes in a smoother
 class Segmenter(ABC):
     @abstractmethod
-    def __init__(self):
-        self.name = "test"
-
-    @abstractmethod
-    def transform(self):
+    def segment(self, sentences: list[str]) -> list[int]:
         pass
 
     @abstractmethod
-    def compute_similarity(self):
+    def _preprocess(self, sentences: list[str]):
         pass
 
     @abstractmethod
-    def smooth_similarity_curve(self):
+    def _transform(self):
         pass
 
-    def select_boundaries(self):
+    @abstractmethod
+    def _similairty(self):
         pass
 
-    def generate_segments(self):
+    @abstractmethod
+    def _smooth(self):
+        pass
+
+    def _boundaries(self):
+        pass
+
+    def _postprocess(self):
         pass
