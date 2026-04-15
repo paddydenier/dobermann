@@ -1,99 +1,122 @@
+import numpy as np
+from nltk.metrics import pk as pk
+from nltk.metrics import windowdiff as wd
+
+# NOTE: only set k window size if segment lengths are highly variable
+
+# NOTE: clearly mark which functions are symmetrics and which not
+
+
+# TODO: Outsource evaluation to NLTK
+
+
+# FIX: if data already lives in object dont pass it again
 class SegmentationEvaluator:
-    def __init__(self, window_size: int | None = None):
-        self.k = window_size
+    def __init__(self, ref_len: list[int], hyp_len: list[int]):
 
-    # ---------- Public API ----------
+        # raw segment lengths
+        self.ref_len = ref_len
+        self.hyp_len = hyp_len
 
-    def pk(self, ref: list[int], hyp: list[int]) -> float:
-        self._validate(ref, hyp)
+        # _validate_input
+        self._validate_input()
 
-        ref_b = self._lengths_to_boundaries(ref)
-        hyp_b = self._lengths_to_boundaries(hyp)
+        # string boundary representation
+        self.ref_str = self._lengths_to_str(self.ref_len)
+        self.hyp_str = self._lengths_to_str(self.hyp_len)
 
-        n = len(ref_b)
-        k = self.k or self._default_k(ref)
+        # validate conversion consistency
+        self._validate_conversion()
 
-        if k <= 0 or k >= n:
-            raise ValueError(f"Invalid window size k={k} for n={n}")
+        self.k_values = self._k_values(ref_len)
 
-        errors = 0
-        total = n - k
+        self.pkn = pk(self.ref_str, self.hyp_str, k=None, boundary="1")
+        self.pkd = pk(
+            self.ref_str, self.hyp_str, k=self.k_values["default"], boundary="1"
+        )
 
-        for i in range(total):
-            same_ref = self._same_segment(ref_b, i, i + k)
-            same_hyp = self._same_segment(hyp_b, i, i + k)
+        self.metrics = self.evaluate()
 
-            if same_ref != same_hyp:
-                errors += 1
+    from nltk.metrics import pk
+    from nltk.metrics import windowdiff as wd
 
-        return errors / total
+    def evaluate(self) -> dict[str, dict[str, float]]:
+        results = {
+            "pk": {},
+            "wd": {},
+        }
 
-    def windowdiff(self, ref: list[int], hyp: list[int]) -> float:
-        self._validate(ref, hyp)
+        for k_name, k in self.k_values.items():
+            results["pk"][k_name] = pk(self.ref_str, self.hyp_str, k=k, boundary="1")
+            results["wd"][k_name] = wd(self.ref_str, self.hyp_str, k=k, boundary="1")
 
-        ref_b = self._lengths_to_boundaries(ref)
-        hyp_b = self._lengths_to_boundaries(hyp)
+        # optional: include nltk default (k=None)
+        results["pk"]["nltk"] = pk(self.ref_str, self.hyp_str, k=None, boundary="1")
 
-        n = len(ref_b)
-        k = self.k or self._default_k(ref)
+        return results
 
-        if k <= 0 or k >= n:
-            raise ValueError(f"Invalid window size k={k} for n={n}")
+        # for each k evaluate pk and wd score.
+        # self.pk = pk(self.ref_lengths, self.hyp_lenghts, k=None, boundary="1")
+        # self.wd = wd(self.ref_lengths, self.hyp_lenghts, k=self.k, boundary="1")
 
-        errors = 0
-        total = n - k
+    def _lengths_to_str(self, lengths: list[int]) -> str:
+        s = []
+        for i, length in enumerate(lengths):
+            s.extend(["0"] * (length - 1))
+            if i != len(lengths) - 1:
+                s.append("1")
+        return "".join(s)
 
-        for i in range(total):
-            ref_count = sum(ref_b[i : i + k])
-            hyp_count = sum(hyp_b[i : i + k])
+    def _k_values(self, ref_lengths: list[int]) -> dict[str, int]:
 
-            if ref_count != hyp_count:
-                errors += 1
+        # percentile approach
+        k_small = max(1, int(round(np.percentile(ref_lengths, 25) / 2)))
+        # k_default = max(1, int(round(np.mean(ref_lengths) / 2)))
+        k_default = self._nltk_default_k()
+        k_large = max(1, int(round(np.percentile(ref_lengths, 75) / 2)))
 
-        return errors / total
+        # min and max approach
+        # k_small = max(1, int(round(min(ref_lengths) / 2)))
+        # k_default = int(round((sum(ref_lengths) / len(ref_lenghts)) / 2))
+        # k_large = int(round(max(ref_lengths) / 2))
 
-    # ---------- Core helpers ----------
+        return {
+            "small": k_small,
+            "default": k_default,
+            "large": k_large,
+        }
 
-    @staticmethod
-    def _lengths_to_boundaries(lengths: list[int]) -> list[int]:
-        """
-        Convert segment lengths → boundary vector.
+    def _validate_input(self):
+        # TODO: add more meaningful error messages
+        ref_sum = sum(self.ref_len)
+        hyp_sum = sum(self.hyp_len)
 
-        Example:
-        [3,2,4] → [0,0,1, 0,1, 0,0,0]
-        """
-        boundaries = []
-        for len in lengths[:-1]:
-            if len <= 0:
-                raise ValueError("Segment lengths must be positive")
-            boundaries.extend([0] * (len - 1))
-            boundaries.append(1)
-        return boundaries
-
-    @staticmethod
-    def _same_segment(boundaries: list[int], i: int, j: int) -> bool:
-        """
-        True if i and j are in same segment (no boundary between them)
-        """
-        return sum(boundaries[i:j]) == 0
-
-    @staticmethod
-    def _default_k(lengths: list[int]) -> int:
-        """
-        Standard choice: half the average segment length (from reference)
-        """
-        avg = sum(lengths) / len(lengths)
-        return max(1, int(round(avg / 2)))
-
-    @staticmethod
-    def _validate(ref: list[int], hyp: list[int]):
-        """
-        Ensure both segmentations cover the same number of sentences
-        """
-        if not ref or not hyp:
-            raise ValueError("Segmentations must not be empty")
-
-        if sum(ref) != sum(hyp):
+        if ref_sum != hyp_sum:
             raise ValueError(
-                f"Mismatch in total length: ref={sum(ref)}, hyp={sum(hyp)}"
+                f"Segmentations must cover the same total length "
+                f"(number of sentences).\n"
+                f"Got: sum(ref_len)={ref_sum}, sum(hyp_len)={hyp_sum}"
             )
+
+        invalid_ref = [len for len in self.ref_len if len <= 0]
+        invalid_hyp = [len for len in self.hyp_len if len <= 0]
+
+        if invalid_ref or invalid_hyp:
+            raise ValueError(
+                "Segment lengths must all be positive integers.\n"
+                f"Invalid values in ref_len: {invalid_ref}\n"
+                f"Invalid values in hyp_len: {invalid_hyp}"
+            )
+
+    def _validate_conversion(self):
+        assert len(self.ref_str) == sum(self.ref_len) - 1
+        assert len(self.hyp_str) == sum(self.hyp_len) - 1
+
+    def _nltk_default_k(self, boundary: str = "1") -> int:
+        n = len(self.ref_str)
+        b = self.ref_str.count(boundary)
+
+        if b == 0:
+            raise ValueError("Reference contains no boundaries")
+
+        return int(round(n / (2.0 * b)))
