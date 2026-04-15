@@ -42,8 +42,9 @@ class TextTiling:
 
         # --- lengths ---
         lengths = [end - start + 1 for start, end in segments]
+        clean = [int(x) for x in lengths]
 
-        return lengths
+        return clean
 
     def _preprocess(self, sentences):
         docs = list(self.nlp.pipe(sentences))
