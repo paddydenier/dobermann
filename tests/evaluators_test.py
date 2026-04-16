@@ -1,5 +1,6 @@
-from dobermann import SegmentationEvaluator
+import pytest
 
+from dobermann import SegmentationEvaluator
 
 
 def test_perfect_segmentation():
@@ -9,22 +10,24 @@ def test_perfect_segmentation():
 
     evaluator = SegmentationEvaluator(hyp_len=hyp, ref_len=ref)
 
-    assert(evaluator.metrics["pk"]["default"] == 0.0)
-    assert(evaluator.metrics["wd"]["default"] == 0.0)
-    assert(evaluator.metrics["ghd"] == 0.0)
-
-    # assert ev.pk(gt, pred) == 0.0
-    # assert ev.windowdiff(gt, pred) == 0.0
+    assert evaluator.metrics["pk"]["default"] == 0.0
+    assert evaluator.metrics["wd"]["default"] == 0.0
+    assert evaluator.metrics["ghd"] == 0.0
 
 
-# def test_single_boundary_shift():
-#     ev = SegmentationEvaluator()
-#
-#     gt = [10, 10, 10]
-#     pred = [11, 9, 10]
-#
-#     pk = ev.pk(gt, pred)
-#     wd = ev.windowdiff(gt, pred)
-#
-#     assert 0 < pk < 0.5
-#     assert 0 < wd < 0.5
+# TODO: add data validation error tests
+def test_sum_mismatch_raises():
+    ref = [3, 2, 4]
+    hyp = [2, 2, 4]  # sum differs
+
+    with pytest.raises(ValueError, match="same total length"):
+        SegmentationEvaluator(ref, hyp)
+
+def test_invalid_segment_lengths():
+    ref = [3, 0, 4]
+    hyp = [2, 3, 2]
+
+    with pytest.raises(ValueError, match="positive integers"):
+        SegmentationEvaluator(ref, hyp)
+
+
