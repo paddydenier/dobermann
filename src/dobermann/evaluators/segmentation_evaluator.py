@@ -1,4 +1,5 @@
 import numpy as np
+from nltk.metrics import ghd as ghd
 from nltk.metrics import pk as pk
 from nltk.metrics import windowdiff as wd
 
@@ -7,12 +8,16 @@ from nltk.metrics import windowdiff as wd
 # NOTE: clearly mark which functions are symmetrics and which not
 
 
-# TODO: Outsource evaluation to NLTK
-
-
 # FIX: if data already lives in object dont pass it again
 class SegmentationEvaluator:
-    def __init__(self, ref_len: list[int], hyp_len: list[int]):
+    def __init__(
+        self,
+        ref_len: list[int],
+        hyp_len: list[int],
+        ins_cost=2.0,
+        del_cost=2.0,
+        shift_cost_coeff=1.0,
+    ):
 
         # raw segment lengths
         self.ref_len = ref_len
@@ -35,15 +40,27 @@ class SegmentationEvaluator:
             self.ref_str, self.hyp_str, k=self.k_values["default"], boundary="1"
         )
 
+        self.ins_cost = ins_cost
+        self.del_cost = del_cost
+        self.shift_cost_coeff = shift_cost_coeff
+
         self.metrics = self.evaluate()
 
-    from nltk.metrics import pk
-    from nltk.metrics import windowdiff as wd
-
     def evaluate(self) -> dict[str, dict[str, float]]:
+
+        ghd_score = ghd(
+            self.ref_str,
+            self.hyp_str,
+            self.ins_cost,
+            self.del_cost,
+            self.shift_cost_coeff,
+            boundary="1",
+        )
+
         results = {
             "pk": {},
             "wd": {},
+            "ghd": ghd_score,
         }
 
         for k_name, k in self.k_values.items():

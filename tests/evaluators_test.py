@@ -1,6 +1,5 @@
 from dobermann import SegmentationEvaluator
 
-# FIX: update class usage
 
 
 def test_perfect_segmentation():
@@ -12,6 +11,7 @@ def test_perfect_segmentation():
 
     assert(evaluator.metrics["pk"]["default"] == 0.0)
     assert(evaluator.metrics["wd"]["default"] == 0.0)
+    assert(evaluator.metrics["ghd"] == 0.0)
 
     # assert ev.pk(gt, pred) == 0.0
     # assert ev.windowdiff(gt, pred) == 0.0
