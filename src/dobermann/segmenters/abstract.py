@@ -1,26 +1,17 @@
 from abc import ABC, abstractmethod
+from dataclasses import dataclass, field
+
+
+@dataclass(slots=True, frozen=True)
+class SegmentationResult:
+    segment_lengths: list[int]
+    runtime: float
+    # method: str
+    metadata: dict = field(default_factory=dict)
 
 
 # takes in a smoother
 class Segmenter(ABC):
     @abstractmethod
-    def __init__(self):
-        self.name = "test"
-
-    @abstractmethod
-    def transform(self):
-        pass
-
-    @abstractmethod
-    def compute_similarity(self):
-        pass
-
-    @abstractmethod
-    def smooth_similarity_curve(self):
-        pass
-
-    def select_boundaries(self):
-        pass
-
-    def generate_segments(self):
+    def segment(self, sentences: list[str]) -> SegmentationResult:
         pass
