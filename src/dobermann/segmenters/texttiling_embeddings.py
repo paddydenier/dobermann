@@ -7,57 +7,59 @@ from scipy.signal import find_peaks
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 from transformers import logging as hf_logging
-from dataclasses import dataclass
 
-# TODO: String representation
-
-# TODO: convert to pure functions
-# TODO: store result in dataclass
+from .abstract import SegmentationResult, Segmenter
 
 
-@dataclass
-class SegmentationResult:
-    segment_lengths: list[int]
-    runtime: float
-
-
-class TextTilingEmbeddings:
+class TextTilingEmbeddings(Segmenter):
     def __init__(self, model: str):
         logging.getLogger("sentence_transformers").setLevel(logging.ERROR)
         hf_logging.set_verbosity_error()
         self.model = SentenceTransformer(model)
 
-    def segment(self, sentences: list[str]):
+    def segment(self, sentences: list[str]) -> SegmentationResult:
         start = time.perf_counter()
-        self.sentences = sentences
-        self.embeddings = self._vectorize()
-        self.similarities = self._similarity()
-        self.smoothed = self._smooth()
-        self.boundaries = self._boundaries(signal=self.smoothed)
-        self.segment_lengths = self._postprocess(
-            boundaries=self.boundaries, n_sentences=len(self.sentences)
-        )
-        end = time.perf_counter()
-        self.time = end - start
 
-    def _vectorize(self):
-        embeddings = self.model.encode(self.sentences)
+        # segmentation
+        embeddings = self._vectorize(self.model, sentences)
+        similarities = self._similarity(embeddings)
+        smoothed = self._smooth(similarities)
+        boundaries = self._boundaries(signal=smoothed)
+        segment_lengths = self._postprocess(
+            boundaries=boundaries, n_sentences=len(sentences)
+        )
+
+        end = time.perf_counter()
+        runtime = end - start
+
+        metadata = {
+            "embeddings": embeddings,
+            "similarities": similarities,
+            "smoothed": smoothed,
+            "boundaries": boundaries,
+        }
+
+        return SegmentationResult(
+            segment_lengths=segment_lengths, runtime=runtime, metadata=metadata
+        )
+
+    def _vectorize(self, model, sentences):
+        embeddings = model.encode(sentences)
         return embeddings
 
-    def _similarity(self):
+    def _similarity(self, embeddings):
         sims = []
 
-        for i in range(len(self.embeddings) - 1):
-            sim = cosine_similarity([self.embeddings[i]], [self.embeddings[i + 1]])[0][
-                0
-            ]
+        for i in range(len(embeddings) - 1):
+            sim = cosine_similarity([embeddings[i]], [embeddings[i + 1]])[0][0]
 
             sims.append(sim)
 
         return sims
 
-    def _smooth(self):
-        smoothed = uniform_filter1d(self.similarities, size=2)
+    def _smooth(self, similarities):
+        # make smoothing windows a class state
+        smoothed = uniform_filter1d(similarities, size=2)
         return smoothed
 
     # TODO: fix thresholding
