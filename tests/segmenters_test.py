@@ -19,14 +19,18 @@ def test_correct_lengths(segmenter):
     ]
     result = segmenter.segment(sentences)
 
+    # segment_lengths match sentences
     assert sum(result.segment_lengths) == len(sentences)
-    # move this to separate
+    # similarities are one less
     assert len(result.metadata["similarities"]) == len(sentences) - 1
+    # sentences and embeddings match
+    assert result.metadata["embeddings"].shape[0] == len(sentences)
 
 
 # TODO: add integration testing with datasets
 
 
+# TODO: add empty sentences
 def test_single_sentence(segmenter):
     result = segmenter.segment(["hello"])
     assert sum(result.segment_lengths) == 1
