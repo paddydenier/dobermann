@@ -2,6 +2,7 @@
 from .data import DataHandler, DataSet
 from .segmenters import TextTiling
 from .segmenters import TextTilingEmbeddings
+from .segmenters import GraphSegEmbeddings
 from .evaluators import SegmentationEvaluator
 
 
@@ -10,5 +11,6 @@ __all__ = [
     "DataSet",
     "TextTiling",
     "TextTilingEmbeddings",
+    "GraphSegEmbeddings",
     "SegmentationEvaluator",
 ]
