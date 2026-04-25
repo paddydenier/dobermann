@@ -11,7 +11,7 @@ from nltk.metrics import windowdiff as wd
 # NOTE: clearly mark which functions are symmetrics and which not
 
 
-# TODO: __str__ and __repr__
+# TODO: __str__ and __repr__ to print results nicely
 
 # TODO: slots = true, frozen = true
 
@@ -24,6 +24,32 @@ class EvaluationResult:
     wd: dict[str, float]
     ghd: float
     runtime: float
+
+    # TODO: make tostring pretty
+    def __str__(self):
+        width = 34
+
+        lines = [
+            "EvaluationResult",
+            "-" * width,
+            f"{'Metric':<20}{'Value':>14}",
+            "-" * width,
+            f"{'Pk (small)':<20}{self.pk['small']:>14.4f}",
+            f"{'Pk (default)':<20}{self.pk['default']:>14.4f}",
+            f"{'Pk (large)':<20}{self.pk['large']:>14.4f}",
+            f"{'Pk (nltk)':<20}{self.pk['nltk']:>14.4f}",
+            "",
+            f"{'WD (small)':<20}{self.wd['small']:>14.4f}",
+            f"{'WD (default)':<20}{self.wd['default']:>14.4f}",
+            f"{'WD (large)':<20}{self.wd['large']:>14.4f}",
+            "",
+            f"{'GHD':<20}{self.ghd:>14.4f}",
+            f"{'Runtime (s)':<20}{self.runtime:>14.4f}",
+            "-" * width,
+            f"REF {self.ref_str}",
+            f"HYP {self.hyp_str}",
+        ]
+        return "\n".join(lines)
 
 
 class SegmentationEvaluator:
