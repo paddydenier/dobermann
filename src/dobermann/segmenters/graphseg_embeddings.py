@@ -32,7 +32,7 @@ class GraphSegEmbeddings(Segmenter):
     # MAIN
     # --------------------------------------------------
 
-    def segment(self, sentences: list[str]) -> SegmentationResult:
+    def _segment(self, sentences: list[str]) -> SegmentationResult:
         start = time.perf_counter()
 
         embeddings = self._vectorize(sentences)
