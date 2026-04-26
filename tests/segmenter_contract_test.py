@@ -26,11 +26,28 @@ def test_equivalent_lengths(segmenter):
     assert sum(result.segment_lengths) == len(sentences)
 
 
-# TODO: single, zero, two sentences base cases
+def test_sentences_not_list(segmenter):
+    sentences = "This is a sentence. This is another sentence."
+    with pytest.raises(TypeError, match="sentences must be a list of str"):
+        segmenter.segment(sentences)
+
+
+def test_list_of_int(segmenter):
+    sentences = [i for i in range(10)]
+    with pytest.raises(TypeError, match="all elements in sentences must be str"):
+        segmenter.segment(sentences)
+
+
+def test_sentences_mixed_type(segmenter):
+    sentences = ["This is a sentence", 1, 2, True]
+    with pytest.raises(TypeError, match="all elements in sentences must be str"):
+        segmenter.segment(sentences)
 
 
 def test_zero_sentence(segmenter):
-    pass
+    sentences = []
+    with pytest.raises(ValueError, match="sentences must be nonempty"):
+        segmenter.segment(sentences)
 
 
 def test_one_sentence(segmenter):
