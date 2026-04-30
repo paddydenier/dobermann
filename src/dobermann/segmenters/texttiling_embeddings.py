@@ -17,7 +17,7 @@ class TextTilingEmbeddings(Segmenter):
         hf_logging.set_verbosity_error()
         self.model = SentenceTransformer(model)
 
-    def segment(self, sentences: list[str]) -> SegmentationResult:
+    def _segment(self, sentences: list[str]) -> SegmentationResult:
         start = time.perf_counter()
 
         # segmentation
