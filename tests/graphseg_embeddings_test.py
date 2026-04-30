@@ -58,3 +58,7 @@ def test_similarity_matrix_diagonal_is_one(segmenter, sentences):
     sim = result.metadata["similarity_matrix"]
 
     assert np.allclose(np.diag(sim), 1.0)
+
+
+# TODO: test_similarity_matrix_is_symmetri
+# TODO: better Metadata consistency check.

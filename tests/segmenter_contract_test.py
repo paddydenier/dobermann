@@ -1,7 +1,6 @@
 import pytest
 
-from dobermann import (DataHandler, DataSet, GraphSegEmbeddings,
-                       TextTilingEmbeddings)
+from dobermann import GraphSegEmbeddings, TextTilingEmbeddings
 
 
 @pytest.fixture(
@@ -14,8 +13,7 @@ def segmenter(request):
     return request.param
 
 
-def test_equivalent_lengths(segmenter):
-    # sum of segment lengths equivalent to number of sentences
+def test_segment_lengths_cover_all_sentences(segmenter):
     sentences = [
         "Cats are animals.",
         "Dogs are animals.",
@@ -32,7 +30,7 @@ def test_sentences_not_list(segmenter):
         segmenter.segment(sentences)
 
 
-def test_list_of_int(segmenter):
+def test_sentences_list_of_int(segmenter):
     sentences = [i for i in range(10)]
     with pytest.raises(TypeError, match="all elements in sentences must be str"):
         segmenter.segment(sentences)
@@ -44,7 +42,7 @@ def test_sentences_mixed_type(segmenter):
         segmenter.segment(sentences)
 
 
-def test_zero_sentence(segmenter):
+def test_sentences_empty_list(segmenter):
     sentences = []
     with pytest.raises(ValueError, match="sentences must be nonempty"):
         segmenter.segment(sentences)
@@ -55,13 +53,10 @@ def test_one_sentence(segmenter):
     assert sum(result.segment_lengths) == 1
 
 
-def test_two_sentence(segmenter):
-    # two obviously unrelated sentences
-    pass
+# TODO: test_two_sentences
 
 
 def test_segments_deterministic(segmenter):
-    # same input consistently produces same output
     sentences = [
         "Cats are animals.",
         "Dogs are animals.",
@@ -74,5 +69,4 @@ def test_segments_deterministic(segmenter):
     assert result1.segment_lengths == result2.segment_lengths
 
 
-# TODO: add integration testing with datasets
-# segmentation must work for all included datasets
+# TODO: test_segmenters_support_all_datasets
