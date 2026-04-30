@@ -10,16 +10,12 @@ class SegmentationResult:
     metadata: dict = field(default_factory=dict)
 
 
-# TODO: validation make segment wrap around _segment
-
-
 # takes in a smoother
 class Segmenter(ABC):
     def segment(self, sentences: list[str]) -> SegmentationResult:
         self._validate_input(sentences)
         return self._segment(sentences)
 
-    # TODO: underscore current segment function
     @abstractmethod
     def _segment(self, sentences: list[str]) -> SegmentationResult: ...
 
