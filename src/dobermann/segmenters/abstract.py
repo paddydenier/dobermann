@@ -10,7 +10,6 @@ class SegmentationResult:
     metadata: dict = field(default_factory=dict)
 
 
-# takes in a smoother
 class Segmenter(ABC):
     def segment(self, sentences: list[str]) -> SegmentationResult:
         self._validate_input(sentences)

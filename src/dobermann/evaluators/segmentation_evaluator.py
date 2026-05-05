@@ -8,15 +8,8 @@ from nltk.metrics import windowdiff as wd
 
 # NOTE: only set k window size if segment lengths are highly variable
 
-# NOTE: clearly mark which functions are symmetrics and which not
 
-
-# TODO: __str__ and __repr__ to print results nicely
-
-# TODO: slots = true, frozen = true
-
-
-@dataclass
+@dataclass(slots=True, frozen=True)
 class EvaluationResult:
     hyp_str: str
     ref_str: str
@@ -25,7 +18,6 @@ class EvaluationResult:
     ghd: float
     runtime: float
 
-    # TODO: make tostring pretty
     def __str__(self):
         width = 34
 

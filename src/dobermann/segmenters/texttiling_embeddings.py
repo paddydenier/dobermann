@@ -20,7 +20,6 @@ class TextTilingEmbeddings(Segmenter):
     def _segment(self, sentences: list[str]) -> SegmentationResult:
         start = time.perf_counter()
 
-        # segmentation
         embeddings = self._vectorize(self.model, sentences)
         similarities = self._similarity(embeddings)
         smoothed = self._smooth(similarities)
@@ -58,7 +57,7 @@ class TextTilingEmbeddings(Segmenter):
         return sims
 
     def _smooth(self, similarities):
-        # make smoothing windows a class state
+        # TODO: make smoothing windows a class state
         smoothed = uniform_filter1d(similarities, size=2)
         return smoothed
 
