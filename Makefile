@@ -19,3 +19,6 @@ format-check:
 
 test:
 	$(PYTHON) pytest tests/
+
+docs-readme:
+	$(PYTHON) dev/update_readme.py
