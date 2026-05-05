@@ -25,7 +25,7 @@ def test_sum_mismatch_raises(evaluator):
     hyp = [2, 2, 4]  # sum differs
 
     with pytest.raises(ValueError, match="same total length"):
-        result = evaluator.evaluate(hyp_len=hyp, ref_len=ref)
+        evaluator.evaluate(hyp_len=hyp, ref_len=ref)
 
 
 def test_invalid_segment_lengths(evaluator):
@@ -33,4 +33,4 @@ def test_invalid_segment_lengths(evaluator):
     hyp = [2, 3, 2]
 
     with pytest.raises(ValueError, match="positive integers"):
-        result = evaluator.evaluate(hyp_len=hyp, ref_len=ref)
+        evaluator.evaluate(hyp_len=hyp, ref_len=ref)

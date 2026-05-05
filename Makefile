@@ -1,7 +1,5 @@
-# Makefile for dev tasks
-
 PYTHON := uv run
-SRC := src
+SRC := .
 
 .PHONY: lint format test 
 

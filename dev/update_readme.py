@@ -11,9 +11,7 @@ SNIPPETS = {
 def inject_snippet(content: str, key: str, file_path: Path) -> str:
     code = file_path.read_text().strip()
 
-    replacement = (
-        f"<!-- BEGIN:{key} -->\n" f"```python\n{code}\n```\n" f"<!-- END:{key} -->"
-    )
+    replacement = f"<!-- BEGIN:{key} -->\n```python\n{code}\n```\n<!-- END:{key} -->"
 
     pattern = re.compile(rf"<!-- BEGIN:{key} -->.*?<!-- END:{key} -->", re.DOTALL)
 
