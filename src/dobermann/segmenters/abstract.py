@@ -9,6 +9,22 @@ class SegmentationResult:
     # method: str
     metadata: dict = field(default_factory=dict)
 
+    def iter_spans(self):
+        start = 0
+
+        for length in self.segment_lengths:
+            end = start + length
+            yield start, end
+            start = end
+
+    def split(self, sentences: list[str]) -> list[list[str]]:
+        chunks = []
+
+        for start, end in self.iter_spans():
+            chunks.append(sentences[start:end])
+
+        return chunks
+
 
 class Segmenter(ABC):
     def segment(self, sentences: list[str]) -> SegmentationResult:
