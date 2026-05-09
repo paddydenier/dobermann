@@ -24,6 +24,16 @@ extensions = [
     "sphinx.ext.viewcode",
 ]
 
+autodoc_mock_imports = [
+    "sentence_transformers",
+    "transformers",
+    "numpy",
+    "scipy",
+    "sklearn",
+    "spacy",
+    "nltk",
+]
+
 templates_path = ["_templates"]
 exclude_patterns = []
 
