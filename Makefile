@@ -1,9 +1,7 @@
-# Makefile for dev tasks
-
 PYTHON := uv run
-SRC := src
+SRC := .
 
-.PHONY: lint format test 
+.PHONY: lint format test docs
 
 lint:
 	$(PYTHON) ruff check --fix $(SRC)
@@ -19,3 +17,18 @@ format-check:
 
 test:
 	$(PYTHON) pytest tests/
+
+docs-readme:
+	$(PYTHON) dev/update_readme.py
+
+docs:
+	$(MAKE) -C docs html
+
+docs-clean:
+	$(MAKE) -C docs clean
+
+docs-api:
+	$(PYTHON) sphinx-apidoc -o docs/source/api src/dobermann
+
+docs-api-clean:
+	rm -rf docs/source/api

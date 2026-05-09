@@ -70,3 +70,56 @@ def test_segments_deterministic(segmenter):
 
 
 # TODO: test_segmenters_support_all_datasets
+
+
+def test_split_returns_one_chunk_per_segment(segmenter):
+    sentences = [
+        "Cats are animals.",
+        "Dogs are animals.",
+        "Python is a programming language.",
+        "Functions can return values.",
+    ]
+
+    segmentation_result = segmenter.segment(sentences)
+    chunks = segmentation_result.split(sentences)
+    assert len(chunks) == len(segmentation_result.segment_lengths)
+
+
+def test_each_chunk_matches_declared_segment_length(segmenter):
+    sentences = [
+        "Cats are animals.",
+        "Dogs are animals.",
+        "Python is a programming language.",
+        "Functions can return values.",
+    ]
+
+    segmentation_result = segmenter.segment(sentences)
+    chunks = segmentation_result.split(sentences)
+    assert [len(chunk) for chunk in chunks] == (segmentation_result.segment_lengths)
+
+
+def test_flattened_chunks_reconstruct_original(segmenter):
+    sentences = [
+        "Cats are animals.",
+        "Dogs are animals.",
+        "Python is a programming language.",
+        "Functions can return values.",
+    ]
+
+    segmentation_result = segmenter.segment(sentences)
+    chunks = segmentation_result.split(sentences)
+    flat = [sentence for chunk in chunks for sentence in chunk]
+    assert flat == sentences
+
+
+def test_no_empty_chunks(segmenter):
+    sentences = [
+        "Cats are animals.",
+        "Dogs are animals.",
+        "Python is a programming language.",
+        "Functions can return values.",
+    ]
+
+    segmentation_result = segmenter.segment(sentences)
+    chunks = segmentation_result.split(sentences)
+    assert all(len(chunk) > 0 for chunk in chunks)

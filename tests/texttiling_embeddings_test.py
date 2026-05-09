@@ -1,6 +1,6 @@
 import pytest
 
-from dobermann import DataHandler, DataSet, TextTilingEmbeddings
+from dobermann import TextTilingEmbeddings
 
 
 @pytest.fixture
@@ -17,19 +17,18 @@ def test_sum_embeddings_equal_length_sentences(segmenter, sentences):
     result = segmenter.segment(sentences)
     assert result.metadata["embeddings"].shape[0] == len(sentences)
 
+
 def test_length_similarities_one_less_than_length_sentences(segmenter, sentences):
     result = segmenter.segment(sentences)
     assert len(result.metadata["similarities"]) == len(sentences) - 1
+
 
 def test_smoothed_embeddings_match_similarities(segmenter, sentences):
     result = segmenter.segment(sentences)
     assert len(result.metadata["smoothed"]) == len(result.metadata["similarities"])
 
+
 # TODO: test_boundaries
 
 
-
-
 # TODO: smoothed embeddings same length as original embeddings
-
-

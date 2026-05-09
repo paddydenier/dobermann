@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from dobermann import DataHandler, DataSet, GraphSegEmbeddings
+from dobermann import GraphSegEmbeddings
 
 
 @pytest.fixture

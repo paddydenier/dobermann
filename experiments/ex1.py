@@ -11,6 +11,7 @@ text = "\n\n".join(sentences)
 
 gap_scores, smooth_scores, depth_scores, boundaries = tt.tokenize(text)
 
+
 # --- FIX: map safely using min-length guard ---
 def boundaries_to_sentence_segments(sentences, boundaries):
     segments = []

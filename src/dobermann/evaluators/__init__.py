@@ -1,3 +1,3 @@
-from .segmentation_evaluator import SegmentationEvaluator
+from .segmentation_evaluator import SegmentationEvaluator, EvaluationResult
 
-__all__ = ["SegmentationEvaluator"]
+__all__ = ["SegmentationEvaluator", "EvaluationResult"]

@@ -1,6 +1,6 @@
 from nltk.tokenize import TextTilingTokenizer
 
-from dobermann import DataHandler, DataSet, SegmentationEvaluator, TextTiling
+from dobermann import DataHandler, DataSet
 
 samples = DataHandler(DataSet.CHOI).samples
 sample = samples[888]
