@@ -3,6 +3,7 @@
 Dobermann is a modern Python library for discourse segmentation, evaluation, and visualization, combining classical computational linguistics literature with contemporary NLP and embedding-based methods.
 
 ![ci workflow](https://github.com/paddydenier/dobermann/actions/workflows/ci.yml/badge.svg)
+![docs workflow](https://github.com/paddydenier/dobermann/actions/workflows/docs.yml/badge.svg)
 
 ## Features
 
