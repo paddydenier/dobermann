@@ -12,6 +12,23 @@ from .abstract import SegmentationResult, Segmenter
 
 
 class TextTilingEmbeddings(Segmenter):
+    """Embedding-based TextTiling segmentation.
+
+    This segmenter replaces lexical similarity with sentence
+    embedding similarity computed from a transformer model.
+
+    Pipeline:
+        1. Encode sentences into embeddings
+        2. Compute adjacent cosine similarities
+        3. Smooth similarity signal
+        4. Detect valley boundaries
+        5. Convert boundaries into segment lengths
+
+    Args:
+        model:
+            SentenceTransformer model name.
+    """
+
     def __init__(self, model: str):
         logging.getLogger("sentence_transformers").setLevel(logging.ERROR)
         hf_logging.set_verbosity_error()

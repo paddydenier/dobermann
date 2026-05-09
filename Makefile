@@ -1,7 +1,7 @@
 PYTHON := uv run
 SRC := .
 
-.PHONY: lint format test 
+.PHONY: lint format test docs
 
 lint:
 	$(PYTHON) ruff check --fix $(SRC)
@@ -20,3 +20,15 @@ test:
 
 docs-readme:
 	$(PYTHON) dev/update_readme.py
+
+docs:
+	$(MAKE) -C docs html
+
+docs-clean:
+	$(MAKE) -C docs clean
+
+docs-api:
+	$(PYTHON) sphinx-apidoc -o docs/source/api src/dobermann
+
+docs-api-clean:
+	rm -rf docs/source/api

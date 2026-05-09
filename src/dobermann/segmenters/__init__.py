@@ -1,5 +1,11 @@
+from .abstract import SegmentationResult
+from .graphseg_embeddings import GraphSegEmbeddings
 from .texttiling import TextTiling
 from .texttiling_embeddings import TextTilingEmbeddings
-from .graphseg_embeddings import GraphSegEmbeddings
 
-__all__ = ["TextTiling", "TextTilingEmbeddings", "GraphSegEmbeddings"]
+__all__ = [
+    "TextTiling",
+    "TextTilingEmbeddings",
+    "GraphSegEmbeddings",
+    "SegmentationResult",
+]

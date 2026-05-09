@@ -4,6 +4,19 @@ from dataclasses import dataclass, field
 
 @dataclass(slots=True, frozen=True)
 class SegmentationResult:
+    """Result returned by segmenters.
+
+    Attributes:
+        segment_lengths:
+            Length of each predicted segment.
+
+        runtime:
+            Segmentation runtime in seconds.
+
+        metadata:
+            Optional algorithm-specific intermediate values.
+    """
+
     segment_lengths: list[int]
     runtime: float
     # method: str
@@ -27,7 +40,21 @@ class SegmentationResult:
 
 
 class Segmenter(ABC):
+    """Abstract topic segmentation interface."""
+
     def segment(self, sentences: list[str]) -> SegmentationResult:
+        """Segment sentences into topical regions.
+
+        Args:
+            sentences:
+                Ordered sentence sequence.
+
+        Returns:
+            Segmentation result containing:
+            - segment lengths
+            - runtime information
+            - optional metadata
+        """
         self._validate_input(sentences)
         return self._segment(sentences)
 
