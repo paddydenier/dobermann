@@ -14,21 +14,25 @@ Dobermann is a modern Python library for discourse segmentation, evaluation, and
 
 ## Installation
 
-Dobermann can conveniently be installed through the pip package manager:
+### Install via pip
+
+The Dobermann core API for segmentation, datasets, and evaluation can be installed using `pip`:
 
 ```bash
 pip install dobermann
 ```
 
-Alternatively, clone the repository to access the full range of tools or contribute to the project:
+### Install from source
+
+To access the full feature set or contribute to the development of the project, clone the repository and install the dependencies using `uv`:
 
 ```bash
 git clone https://github.com/paddydenier/dobermann.git
 cd dobermann
-pip install -e .
+uv sync
 ```
 
-TODO: explain constraints.
+For further development instructions, refer to the Makefile or the project documentation.
 
 ## Usage
 
