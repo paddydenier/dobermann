@@ -1,5 +1,5 @@
 # Public facing API
-from .data import DataHandler, DataSet
+from .data import DataHandler, DataSet, Sample
 from .evaluators import EvaluationResult, SegmentationEvaluator
 from .segmenters import (
     GraphSegEmbeddings,
@@ -10,6 +10,7 @@ from .segmenters import (
 __all__ = [
     "DataHandler",
     "DataSet",
+    "Sample",
     "TextTilingEmbeddings",
     "GraphSegEmbeddings",
     "SegmentationEvaluator",

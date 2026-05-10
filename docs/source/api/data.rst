@@ -7,6 +7,13 @@ DataHandler
 .. autoclass:: dobermann.DataHandler
    :members:
 
+Sample
+-----------
+
+.. autoclass:: dobermann.Sample
+   :members:
+
+
 DataSet
 -------
 
