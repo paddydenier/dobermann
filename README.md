@@ -58,7 +58,3 @@ eval_result = evaluator.evaluate(hyp_len=segmentation_result.segment_lengths, re
 print(eval_result)
 ```
 <!-- END:quickstart -->
-
-## Contribution and Development Workflows
-
-TODO: explain makefile.
