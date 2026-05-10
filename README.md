@@ -40,10 +40,9 @@ Minimal segmentation and evaluation workflow example:
 
 <!-- BEGIN:quickstart -->
 ```python
-from dobermann import (DataHandler, DataSet, SegmentationEvaluator,
-                       GraphSegEmbeddings)
+from dobermann import DataHandler, DataSet, SegmentationEvaluator, GraphSegEmbeddings
 
-samples = DataHandler(DataSet.CHOI).samples
+samples = DataHandler.samples(DataSet.CHOI)
 sample = samples[888]
 sentences = sample.sentences
 
@@ -53,7 +52,9 @@ segmentation_result = segmenter.segment(sentences)
 
 # evaluation
 evaluator = SegmentationEvaluator()
-eval_result = evaluator.evaluate(hyp_len=segmentation_result.segment_lengths, ref_len=sample.segment_lengths)
+eval_result = evaluator.evaluate(
+    hyp_len=segmentation_result.segment_lengths, ref_len=sample.segment_lengths
+)
 
 print(eval_result)
 ```
