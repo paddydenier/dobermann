@@ -11,6 +11,17 @@ from nltk.metrics import windowdiff as wd
 
 @dataclass(slots=True, frozen=True)
 class EvaluationResult:
+    """Segmentation evluation result container.
+
+    Attributes:
+        hyp_str: Hypothesized segmentation string representation.
+        ref_str: Reference (ground truth) segmentation string representation.
+        pk: Pk error metrics under different settings.
+        wd: WindowDiff error metrics under different settings.
+        ghd: Generalized Hamming Distance error metric
+        runtime: Evaluation process execution time in seconds.
+    """
+
     hyp_str: str
     ref_str: str
     pk: dict[str, float]
@@ -18,7 +29,12 @@ class EvaluationResult:
     ghd: float
     runtime: float
 
-    def __str__(self):
+    def __str__(self) -> str:
+        """Evaluation result container summary tostring function.
+
+        Returns:
+            str: Multi-line human-readable and interpretable summary of evaluation result.
+        """
         width = 34
 
         lines = [
@@ -45,6 +61,15 @@ class EvaluationResult:
 
 
 class SegmentationEvaluator:
+    """Stateful evaluator for comparing segmentation results against ground truth.
+
+    Attributes:
+        ins_cost: Cost of inserting a boundary.
+        del_cost: Cost of deleting a boundary.
+        shift_cost_coeff: Cost of shifting a boundary.
+        boundary_symbol: Character symbol that denotes a boundary.
+    """
+
     def __init__(
         self,
         ins_cost=2.0,
@@ -63,7 +88,15 @@ class SegmentationEvaluator:
         ref_len: list[int],
         hyp_len: list[int],
     ) -> EvaluationResult:
+        """Evaluation function
 
+        Args:
+            ref_len: Reference (ground truth) segment lengths.
+            hyp_len: Hypothesized segment lengths.
+
+        Returns:
+            EvaluationResult: Evaluation result container.
+        """
         start_time = time.perf_counter()
 
         self._validate_input(ref_len, hyp_len)

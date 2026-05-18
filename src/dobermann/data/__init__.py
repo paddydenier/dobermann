@@ -1,4 +1,4 @@
 from .loader import DataHandler
-from .types import DataSet
+from .types import DataSet, Sample
 
-__all__ = ["DataHandler", "DataSet"]
+__all__ = ["DataHandler", "DataSet", "Sample"]

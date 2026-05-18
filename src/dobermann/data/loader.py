@@ -3,17 +3,29 @@ from pathlib import Path
 
 from .types import DataSet, Sample
 
+# TODO: make stateless
+# TODO: move datasets and stuff in here
+# TODO: dataset type
+
 
 class DataHandler:
-    def __init__(self, data_set: DataSet, transform_fn=None):
+    @staticmethod
+    def samples(data_set: DataSet) -> list[Sample]:
+        """Load and parse built-in datasets.
 
+        Args:
+            data_set: Dataset identifier used to locate JSON file.
+
+        Returns:
+            list[Sample]: List of parsed samples from dataset.
+        """
         base_path = Path(__file__).parent / "datasets"
         file_path = base_path / data_set.value
 
         with open(file_path, "r") as f:
             raw_samples = json.load(f)
 
-        self.samples: list[Sample] = [
+        return [
             Sample(sentences=s["text"], segment_lengths=s["segment_length"])
             for s in raw_samples
         ]

@@ -4,8 +4,8 @@ from dobermann import DataHandler, DataSet
 
 
 @pytest.mark.parametrize("dataset", list(DataSet))
-def test_dataset_does_not_crash(dataset):
-    DataHandler(dataset)
+def test_dataset_samples_does_not_crash(dataset):
+    DataHandler.samples(dataset)
 
 
 # FIX: ABSTRACTS Dataset incorrect lengths!

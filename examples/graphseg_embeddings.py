@@ -1,6 +1,6 @@
 from dobermann import DataHandler, DataSet, SegmentationEvaluator, GraphSegEmbeddings
 
-samples = DataHandler(DataSet.CHOI).samples
+samples = DataHandler.samples(DataSet.CHOI)
 sample = samples[888]
 sentences = sample.sentences
 

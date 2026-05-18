@@ -14,19 +14,25 @@ Dobermann is a modern Python library for discourse segmentation, evaluation, and
 
 ## Installation
 
-Dobermann can conveniently be installed through the pip package manager:
+### Install via pip
+
+The Dobermann core API for segmentation, datasets, and evaluation can be installed using `pip`:
 
 ```bash
 pip install dobermann
 ```
 
-Alternatively, clone the repository to access the full range of tools or contribute to the project:
+### Install from source
+
+To access the full feature set or contribute to the development of the project, clone the repository and install the dependencies using `uv`:
 
 ```bash
 git clone https://github.com/paddydenier/dobermann.git
 cd dobermann
-pip install -e .
+uv sync
 ```
+
+For further development instructions, refer to the Makefile or the project documentation.
 
 ## Usage
 
@@ -34,10 +40,9 @@ Minimal segmentation and evaluation workflow example:
 
 <!-- BEGIN:quickstart -->
 ```python
-from dobermann import (DataHandler, DataSet, SegmentationEvaluator,
-                       GraphSegEmbeddings)
+from dobermann import DataHandler, DataSet, SegmentationEvaluator, GraphSegEmbeddings
 
-samples = DataHandler(DataSet.CHOI).samples
+samples = DataHandler.samples(DataSet.CHOI)
 sample = samples[888]
 sentences = sample.sentences
 
@@ -47,7 +52,9 @@ segmentation_result = segmenter.segment(sentences)
 
 # evaluation
 evaluator = SegmentationEvaluator()
-eval_result = evaluator.evaluate(hyp_len=segmentation_result.segment_lengths, ref_len=sample.segment_lengths)
+eval_result = evaluator.evaluate(
+    hyp_len=segmentation_result.segment_lengths, ref_len=sample.segment_lengths
+)
 
 print(eval_result)
 ```
