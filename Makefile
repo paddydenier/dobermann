@@ -32,3 +32,6 @@ docs-api:
 
 docs-api-clean:
 	rm -rf docs/source/api
+
+backend:
+	uv run uvicorn api.main:app --reload
