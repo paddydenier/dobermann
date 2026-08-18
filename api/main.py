@@ -1,5 +1,8 @@
-from fastapi import FastAPI, HTTPException
+from typing import Annotated
 
+from fastapi import Body, FastAPI, HTTPException
+
+from dobermann.data import Document
 from dobermann.segmenters import GraphSegEmbeddings, TextTilingEmbeddings
 
 app = FastAPI()
@@ -17,13 +20,18 @@ def root():
 
 
 @app.post("/segment")
-def segment(algorithm: str, text: list[str]):
+def segment(
+    algorithm: str,
+    text: Annotated[str, Body()],
+):
     if algorithm not in segmenters:
         raise HTTPException(
             status_code=400,
             detail=f"Unknown algorithm: {algorithm}",
         )
 
-    result = segmenters[algorithm].segment(text)
+    document = Document.from_text(text)
 
-    return {"segments": result.split(text)}
+    result = segmenters[algorithm].segment(document.sentences)
+
+    return {"segments": result.split(document.sentences)}
