@@ -35,6 +35,7 @@ TODO: explain constraints.
 Minimal segmentation and evaluation workflow example:
 
 <!-- BEGIN:quickstart -->
+
 ```python
 from dobermann import (DataHandler, DataSet, SegmentationEvaluator,
                        GraphSegEmbeddings)
@@ -53,7 +54,20 @@ eval_result = evaluator.evaluate(hyp_len=segmentation_result.segment_lengths, re
 
 print(eval_result)
 ```
+
 <!-- END:quickstart -->
+
+## API Usage
+
+For integration into existing pipelines, Dobermann provides a standardized FastAPI interface for exposing its segmentation capabilities through a REST API.
+
+### Starting the API
+
+The API can be started using the below Makefile command and will become available on port 8000.
+
+```bash
+make backend
+```
 
 ## Contribution and Development Workflows
 
