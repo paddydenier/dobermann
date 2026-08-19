@@ -63,10 +63,15 @@ For integration into existing pipelines, Dobermann provides a standardized FastA
 
 ### Starting the API
 
-The API can be started using the below Makefile command and will become available on port 8000.
+On default port 8000:
 
 ```bash
 make backend
+```
+
+On custom port, e.g., 8081:
+```bash
+make backend PORT=8081
 ```
 
 ## Contribution and Development Workflows

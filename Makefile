@@ -1,5 +1,6 @@
 PYTHON := uv run
 SRC := .
+PORT ?= 8000
 
 .PHONY: lint format test docs
 
@@ -34,4 +35,4 @@ docs-api-clean:
 	rm -rf docs/source/api
 
 backend:
-	uv run uvicorn api.main:app --reload
+	uv run uvicorn api.main:app --reload --port $(PORT)
