@@ -1,6 +1,7 @@
 import pytest
 
-from dobermann import DataHandler, DataSet
+from benchmark.loader import DataHandler
+from benchmark.types import DataSet
 
 
 @pytest.mark.parametrize("dataset", list(DataSet))

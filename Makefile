@@ -17,7 +17,7 @@ format-check:
 	$(PYTHON) ruff format --check $(SRC)
 
 test:
-	$(PYTHON) pytest tests/
+	$(PYTHON) pytest
 
 docs-readme:
 	$(PYTHON) dev/update_readme.py
@@ -36,3 +36,6 @@ docs-api-clean:
 
 backend:
 	uv run uvicorn api.main:app --reload --port $(PORT)
+
+benchmark:
+	uv run python -m benchmark.main
