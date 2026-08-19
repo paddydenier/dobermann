@@ -2,7 +2,7 @@ from typing import Annotated
 
 from fastapi import Body, FastAPI, HTTPException
 
-from dobermann.data import Document
+from dobermann import Document
 from dobermann.segmenters import GraphSegEmbeddings, TextTilingEmbeddings
 
 app = FastAPI()

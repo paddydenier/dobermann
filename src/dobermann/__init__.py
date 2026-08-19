@@ -1,4 +1,5 @@
 # Public facing API
+from .document import Document
 from .evaluators import EvaluationResult, SegmentationEvaluator
 from .segmenters import (
     GraphSegEmbeddings,
@@ -8,6 +9,7 @@ from .segmenters import (
 )
 
 __all__ = [
+    "Document",
     "TextTiling",
     "TextTilingEmbeddings",
     "GraphSegEmbeddings",
