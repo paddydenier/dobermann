@@ -28,13 +28,12 @@ cd dobermann
 pip install -e .
 ```
 
-TODO: explain constraints.
-
 ## Usage
 
 Minimal segmentation and evaluation workflow example:
 
 <!-- BEGIN:quickstart -->
+
 ```python
 from dobermann import Document, GraphSegEmbeddings, SegmentationEvaluator
 
@@ -46,6 +45,7 @@ segmentation_result = segmenter.segment(document.sentences)
 
 print(segmentation_result.split(document.sentences))
 ```
+
 <!-- END:quickstart -->
 
 ## API Usage
@@ -61,10 +61,9 @@ make backend
 ```
 
 On custom port, e.g., 8081:
+
 ```bash
 make backend PORT=8081
 ```
 
 ## Contribution and Development Workflows
-
-TODO: explain makefile.

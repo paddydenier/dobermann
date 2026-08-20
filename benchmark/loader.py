@@ -3,10 +3,6 @@ from pathlib import Path
 
 from .types import DataSet, Sample
 
-# TODO: make stateless
-# TODO: move datasets and stuff in here
-# TODO: dataset type
-
 
 class DataHandler:
     @staticmethod

@@ -1,4 +1,3 @@
-# TODO: implement document import
 # create document from dataset
 # create document from raw text, document from text file.
 # create document from HTML
