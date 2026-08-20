@@ -10,7 +10,6 @@ requires-python = ">=3.12"
 
 dependencies = [
     "spacy>=3.8.14",
-    "en_core_web_sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl",
     "nltk>=3.9.4",
     "sentence-transformers>=5.4.1",
 ]
