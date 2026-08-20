@@ -12,8 +12,6 @@ dependencies = [
     "en_core_web_sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl",
     "nltk>=3.9.4",
     "sentence-transformers>=5.4.1",
-    "fastapi>=0.141.1", # TODO: isolate fastapi dependency from core library
-    "uvicorn[standard]>=0.52.1", # TODO: isolate from core library
 ]
 
 [project.scripts]
@@ -25,9 +23,9 @@ build-backend = "uv_build"
 
 [dependency-groups]
 dev = [
+    "fastapi>=0.141.1",
+    "uvicorn[standard]>=0.52.1",
     "pytest>=9.0.2",
     "ruff>=0.15.8",
-]
-docs = [
     "sphinx>=9.1.0",
 ]
