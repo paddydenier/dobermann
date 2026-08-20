@@ -7,6 +7,7 @@ authors = [
     { name = "Paddy Denier", email = "202327146+paddydenier@users.noreply.github.com" }
 ]
 requires-python = ">=3.12"
+
 dependencies = [
     "spacy>=3.8.14",
     "en_core_web_sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl",
@@ -27,5 +28,8 @@ dev = [
     "uvicorn[standard]>=0.52.1",
     "pytest>=9.0.2",
     "ruff>=0.15.8",
+]
+
+docs = [
     "sphinx>=9.1.0",
 ]
