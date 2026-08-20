@@ -1,5 +1,6 @@
 PYTHON := uv run
 SRC := .
+PORT ?= 8000
 
 .PHONY: lint format test docs
 
@@ -16,7 +17,7 @@ format-check:
 	$(PYTHON) ruff format --check $(SRC)
 
 test:
-	$(PYTHON) pytest tests/
+	$(PYTHON) pytest
 
 docs-readme:
 	$(PYTHON) dev/update_readme.py
@@ -32,3 +33,9 @@ docs-api:
 
 docs-api-clean:
 	rm -rf docs/source/api
+
+backend:
+	uv run uvicorn api.main:app --reload --port $(PORT)
+
+benchmark:
+	uv run python -m benchmark.main

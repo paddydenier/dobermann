@@ -30,6 +30,9 @@ class SegmentationResult:
             yield start, end
             start = end
 
+    # TODO: redesign akwared api
+    # curr: result.split(document.sentences)
+    # goal: result.split()
     def split(self, sentences: list[str]) -> list[list[str]]:
         chunks = []
 
