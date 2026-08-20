@@ -346,8 +346,10 @@ dev = [
     { name = "fastapi" },
     { name = "pytest" },
     { name = "ruff" },
-    { name = "sphinx" },
     { name = "uvicorn", extra = ["standard"] },
+]
+docs = [
+    { name = "sphinx" },
 ]
 
 [package.metadata]
@@ -363,9 +365,9 @@ dev = [
     { name = "fastapi", specifier = ">=0.141.1" },
     { name = "pytest", specifier = ">=9.0.2" },
     { name = "ruff", specifier = ">=0.15.8" },
-    { name = "sphinx", specifier = ">=9.1.0" },
     { name = "uvicorn", extras = ["standard"], specifier = ">=0.52.1" },
 ]
+docs = [{ name = "sphinx", specifier = ">=9.1.0" }]
 
 [[package]]
 name = "docutils"
