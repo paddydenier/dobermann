@@ -1,7 +1,7 @@
 [project]
 name = "dobermann"
 version = "0.1.0"
-description = "Add your description here"
+description = "Modern python library for discourse segmentation."
 readme = "README.md"
 authors = [
     { name = "Paddy Denier", email = "202327146+paddydenier@users.noreply.github.com" }
