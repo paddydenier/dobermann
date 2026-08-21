@@ -10,7 +10,6 @@ dobermann documentation
    :maxdepth: 2
    :caption: Core API:
 
-   api/data
    api/segmenters
    api/evaluators
 
