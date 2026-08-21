@@ -1,11 +1,7 @@
-# create document from dataset
-# create document from raw text, document from text file.
-# create document from HTML
-# create document from URL
-
 from dataclasses import dataclass
+import re
 
-import nltk
+_SENTENCE_END = re.compile(r"(?<=[.!?])(?:[\"']+)?\s+(?=[A-Z0-9])")
 
 
 @dataclass
@@ -14,6 +10,16 @@ class Document:
 
     @classmethod
     def from_text(cls, text: str) -> "Document":
-        sentences = nltk.sent_tokenize(text)
-
+        sentences = _split_sentences(text)
         return cls(sentences=sentences)
+
+
+def _split_sentences(text: str) -> list[str]:
+    text = text.strip()
+
+    if not text:
+        return []
+
+    return [
+        sentence.strip() for sentence in _SENTENCE_END.split(text) if sentence.strip()
+    ]
