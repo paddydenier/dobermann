@@ -1,13 +1,19 @@
 from dataclasses import fields
 from numbers import Number
 
+from sentence_transformers import SentenceTransformer
+
 from benchmark.loader import DataHandler
 from benchmark.types import DataSet
 from dobermann import (
     GraphSegEmbeddings,
     SegmentationEvaluator,
+    SentenceTransformerEmbedder,
     TextTilingEmbeddings,
 )
+
+model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
+embedder = SentenceTransformerEmbedder(model)
 
 
 def evaluate_segmenter(segmenter, samples, evaluator):
@@ -42,8 +48,8 @@ def main():
     evaluator = SegmentationEvaluator()
 
     segmenters = {
+        "TextTilingEmbeddings": TextTilingEmbeddings(embedder),
         "GraphSegEmbeddings": GraphSegEmbeddings("all-MiniLM-L6-v2"),
-        "TextTilingEmbeddings": TextTilingEmbeddings("all-MiniLM-L6-v2"),
     }
 
     all_results = {}

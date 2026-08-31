@@ -4,11 +4,11 @@ import time
 import numpy as np
 from scipy.ndimage import uniform_filter1d
 from scipy.signal import find_peaks
-from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 from transformers import logging as hf_logging
 
 from .abstract import SegmentationResult, Segmenter
+from ..embeddings import Embedder
 
 
 class TextTilingEmbeddings(Segmenter):
@@ -29,15 +29,15 @@ class TextTilingEmbeddings(Segmenter):
             SentenceTransformer model name.
     """
 
-    def __init__(self, model: str):
+    def __init__(self, embedder: Embedder):
+        self.embedder = embedder
         logging.getLogger("sentence_transformers").setLevel(logging.ERROR)
         hf_logging.set_verbosity_error()
-        self.model = SentenceTransformer(model)
 
     def _segment(self, sentences: list[str]) -> SegmentationResult:
         start = time.perf_counter()
 
-        embeddings = self._vectorize(self.model, sentences)
+        embeddings = self.embedder.embed(sentences)
         similarities = self._similarity(embeddings)
         smoothed = self._smooth(similarities)
         boundaries = self._boundaries(signal=smoothed)
