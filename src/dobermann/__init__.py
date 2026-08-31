@@ -1,11 +1,8 @@
 # Public facing API
 from .document import Document
+from .embeddings import SentenceTransformerEmbedder
 from .evaluators import EvaluationResult, SegmentationEvaluator
-from .segmenters import (
-    GraphSegEmbeddings,
-    SegmentationResult,
-    TextTilingEmbeddings,
-)
+from .segmenters import GraphSegEmbeddings, SegmentationResult, TextTilingEmbeddings
 
 __all__ = [
     "Document",
@@ -15,4 +12,5 @@ __all__ = [
     "SegmentationEvaluator",
     "EvaluationResult",
     "SegmentationResult",
+    "SentenceTransformerEmbedder",
 ]
