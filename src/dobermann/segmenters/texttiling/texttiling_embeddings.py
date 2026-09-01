@@ -7,8 +7,16 @@ from scipy.signal import find_peaks
 from sklearn.metrics.pairwise import cosine_similarity
 from transformers import logging as hf_logging
 
-from .abstract import SegmentationResult, Segmenter
-from ..embeddings import Embedder
+from ...embeddings import Embedder
+from ..abstract import SegmentationResult, Segmenter
+from .similarity import Similarity
+from .smoothing import Smoother
+
+# no need to know implementation, just the abstraction
+
+# TODO list for refactoring into components
+# TODO: move TextTilingEmbeddings into a texttiling/ folder
+# TODO: deconstruct each pipeline function into components and implement here
 
 
 class TextTilingEmbeddings(Segmenter):
@@ -29,8 +37,10 @@ class TextTilingEmbeddings(Segmenter):
             SentenceTransformer model name.
     """
 
-    def __init__(self, embedder: Embedder):
+    def __init__(self, embedder: Embedder, similarity: Similarity, smoother: Smoother):
         self.embedder = embedder
+        self.similarity = similarity
+        self.smoother = smoother
         logging.getLogger("sentence_transformers").setLevel(logging.ERROR)
         hf_logging.set_verbosity_error()
 
@@ -38,8 +48,10 @@ class TextTilingEmbeddings(Segmenter):
         start = time.perf_counter()
 
         embeddings = self.embedder.embed(sentences)
-        similarities = self._similarity(embeddings)
-        smoothed = self._smooth(similarities)
+        # similarities = self._similarity(embeddings)
+        similarities = self.similarity.compute(embeddings)
+        # smoothed = self._smooth(similarities)
+        smoothed = self.smoother.smooth(similarities)
         boundaries = self._boundaries(signal=smoothed)
         segment_lengths = self._postprocess(
             boundaries=boundaries, n_sentences=len(sentences)

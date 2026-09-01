@@ -6,7 +6,9 @@ from sentence_transformers import SentenceTransformer
 from benchmark.loader import DataHandler
 from benchmark.types import DataSet
 from dobermann import (
+    CosineSimilarity,
     GraphSegEmbeddings,
+    MovingAverageSmoother,
     SegmentationEvaluator,
     SentenceTransformerEmbedder,
     TextTilingEmbeddings,
@@ -14,6 +16,9 @@ from dobermann import (
 
 model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
 embedder = SentenceTransformerEmbedder(model)
+
+smoother = MovingAverageSmoother()
+similarity = CosineSimilarity()
 
 
 def evaluate_segmenter(segmenter, samples, evaluator):
@@ -48,7 +53,7 @@ def main():
     evaluator = SegmentationEvaluator()
 
     segmenters = {
-        "TextTilingEmbeddings": TextTilingEmbeddings(embedder),
+        "TextTilingEmbeddings": TextTilingEmbeddings(embedder, similarity, smoother),
         "GraphSegEmbeddings": GraphSegEmbeddings("all-MiniLM-L6-v2"),
     }
 
