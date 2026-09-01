@@ -10,6 +10,12 @@ from .segmenters.texttiling.similarity import CosineSimilarity, Similarity
 # import smoothing
 from .segmenters.texttiling.smoothing import MovingAverageSmoother, Smoother
 
+# import boundary
+from .segmenters.texttiling.boundaries import (
+    AdaptiveValleyBoundaryDetector,
+    BoundaryDetector,
+)
+
 __all__ = [
     "Document",
     "TextTiling",
@@ -25,4 +31,6 @@ __all__ = [
     "Smoother",
     "Similarity",
     "CosineSimilarity",
+    "AdaptiveValleyBoundaryDetector",
+    "BoundaryDetector",
 ]

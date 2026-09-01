@@ -11,12 +11,15 @@ from ...embeddings import Embedder
 from ..abstract import SegmentationResult, Segmenter
 from .similarity import Similarity
 from .smoothing import Smoother
+from .boundaries import BoundaryDetector
 
 # no need to know implementation, just the abstraction
 
 # TODO list for refactoring into components
 # TODO: move TextTilingEmbeddings into a texttiling/ folder
 # TODO: deconstruct each pipeline function into components and implement here
+
+# NOTE: don't set defaults here, use a factory/builder
 
 
 class TextTilingEmbeddings(Segmenter):
@@ -37,10 +40,17 @@ class TextTilingEmbeddings(Segmenter):
             SentenceTransformer model name.
     """
 
-    def __init__(self, embedder: Embedder, similarity: Similarity, smoother: Smoother):
+    def __init__(
+        self,
+        embedder: Embedder,
+        similarity: Similarity,
+        smoother: Smoother,
+        boundary: BoundaryDetector,
+    ):
         self.embedder = embedder
         self.similarity = similarity
         self.smoother = smoother
+        self.boundary = boundary
         logging.getLogger("sentence_transformers").setLevel(logging.ERROR)
         hf_logging.set_verbosity_error()
 
@@ -52,7 +62,8 @@ class TextTilingEmbeddings(Segmenter):
         similarities = self.similarity.compute(embeddings)
         # smoothed = self._smooth(similarities)
         smoothed = self.smoother.smooth(similarities)
-        boundaries = self._boundaries(signal=smoothed)
+        # boundaries = self._boundaries(signal=smoothed)
+        boundaries = self.boundary.boundaries(smoothed)
         segment_lengths = self._postprocess(
             boundaries=boundaries, n_sentences=len(sentences)
         )

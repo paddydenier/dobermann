@@ -1,6 +1,7 @@
 from .similarity import CosineSimilarity, Similarity
 from .smoothing import MovingAverageSmoother, Smoother
 from .texttiling_embeddings import TextTilingEmbeddings
+from .boundaries import BoundaryDetector, AdaptiveValleyBoundaryDetector
 
 __all__ = [
     "TextTilingEmbeddings",
@@ -8,4 +9,6 @@ __all__ = [
     "MovingAverageSmoother",
     "Similarity",
     "CosineSimilarity",
+    "BoundaryDetector",
+    "AdaptiveValleyBoundaryDetector",
 ]

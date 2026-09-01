@@ -1,6 +1,12 @@
 from .abstract import SegmentationResult
 from .graphseg_embeddings import GraphSegEmbeddings
-from .texttiling import TextTilingEmbeddings, Smoother, MovingAverageSmoother
+from .texttiling import (
+    AdaptiveValleyBoundaryDetector,
+    BoundaryDetector,
+    MovingAverageSmoother,
+    Smoother,
+    TextTilingEmbeddings,
+)
 
 __all__ = [
     "TextTilingEmbeddings",
@@ -8,4 +14,6 @@ __all__ = [
     "SegmentationResult",
     "Smoother",
     "MovingAverageSmoother",
+    "BoundaryDetector",
+    "AdaptiveValleyBoundaryDetector",
 ]

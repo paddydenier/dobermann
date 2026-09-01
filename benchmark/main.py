@@ -12,6 +12,7 @@ from dobermann import (
     SegmentationEvaluator,
     SentenceTransformerEmbedder,
     TextTilingEmbeddings,
+    AdaptiveValleyBoundaryDetector,
 )
 
 model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
@@ -19,6 +20,8 @@ embedder = SentenceTransformerEmbedder(model)
 
 smoother = MovingAverageSmoother()
 similarity = CosineSimilarity()
+
+boundary = AdaptiveValleyBoundaryDetector()
 
 
 def evaluate_segmenter(segmenter, samples, evaluator):
@@ -53,7 +56,9 @@ def main():
     evaluator = SegmentationEvaluator()
 
     segmenters = {
-        "TextTilingEmbeddings": TextTilingEmbeddings(embedder, similarity, smoother),
+        "TextTilingEmbeddings": TextTilingEmbeddings(
+            embedder, similarity, smoother, boundary
+        ),
         "GraphSegEmbeddings": GraphSegEmbeddings("all-MiniLM-L6-v2"),
     }
 
