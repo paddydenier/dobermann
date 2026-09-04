@@ -3,7 +3,9 @@ from .graphseg_embeddings import GraphSegEmbeddings
 from .texttiling import (
     AdaptiveValleyBoundaryDetector,
     BoundaryDetector,
+    BoundaryToLengthProcessor,
     MovingAverageSmoother,
+    PostProcessor,
     Smoother,
     TextTilingEmbeddings,
 )
@@ -16,4 +18,6 @@ __all__ = [
     "MovingAverageSmoother",
     "BoundaryDetector",
     "AdaptiveValleyBoundaryDetector",
+    "PostProcessor",
+    "BoundaryToLengthProcessor",
 ]

@@ -9,9 +9,10 @@ from transformers import logging as hf_logging
 
 from ...embeddings import Embedder
 from ..abstract import SegmentationResult, Segmenter
+from .boundaries import BoundaryDetector
+from .postprocessor import PostProcessor  # needs better naming
 from .similarity import Similarity
 from .smoothing import Smoother
-from .boundaries import BoundaryDetector
 
 # no need to know implementation, just the abstraction
 
@@ -46,11 +47,13 @@ class TextTilingEmbeddings(Segmenter):
         similarity: Similarity,
         smoother: Smoother,
         boundary: BoundaryDetector,
+        post_procesor: PostProcessor,
     ):
         self.embedder = embedder
         self.similarity = similarity
         self.smoother = smoother
         self.boundary = boundary
+        self.post_procesor = post_procesor
         logging.getLogger("sentence_transformers").setLevel(logging.ERROR)
         hf_logging.set_verbosity_error()
 
@@ -64,9 +67,12 @@ class TextTilingEmbeddings(Segmenter):
         smoothed = self.smoother.smooth(similarities)
         # boundaries = self._boundaries(signal=smoothed)
         boundaries = self.boundary.boundaries(smoothed)
-        segment_lengths = self._postprocess(
-            boundaries=boundaries, n_sentences=len(sentences)
-        )
+
+        segment_lengths = self.post_procesor.process(boundaries, len(sentences))
+
+        # segment_lengths = self._postprocess(
+        #     boundaries=boundaries, n_sentences=len(sentences)
+        # )
 
         end = time.perf_counter()
         runtime = end - start
