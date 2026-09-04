@@ -3,6 +3,7 @@ from .document import Document
 from .embeddings import Embedder, SentenceTransformerEmbedder
 from .evaluators import EvaluationResult, SegmentationEvaluator
 from .segmenters import GraphSegEmbeddings, SegmentationResult, TextTilingEmbeddings
+from .segmenters.texttiling import TextTiling
 
 # import boundary
 from .segmenters.texttiling.boundaries import (
@@ -39,4 +40,5 @@ __all__ = [
     "BoundaryDetector",
     "PostProcessor",
     "BoundaryToLengthProcessor",
+    "TextTiling",
 ]

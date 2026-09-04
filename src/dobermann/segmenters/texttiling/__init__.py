@@ -2,6 +2,7 @@ from .boundaries import AdaptiveValleyBoundaryDetector, BoundaryDetector
 from .postprocessor import BoundaryToLengthProcessor, PostProcessor
 from .similarity import CosineSimilarity, Similarity
 from .smoothing import MovingAverageSmoother, Smoother
+from .texttiling import TextTiling
 from .texttiling_embeddings import TextTilingEmbeddings
 
 __all__ = [
@@ -14,4 +15,5 @@ __all__ = [
     "AdaptiveValleyBoundaryDetector",
     "PostProcessor",
     "BoundaryToLengthProcessor",
+    "TextTiling",
 ]

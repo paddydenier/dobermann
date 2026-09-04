@@ -8,6 +8,7 @@ from .texttiling import (
     PostProcessor,
     Smoother,
     TextTilingEmbeddings,
+    TextTiling,
 )
 
 __all__ = [
@@ -20,4 +21,5 @@ __all__ = [
     "AdaptiveValleyBoundaryDetector",
     "PostProcessor",
     "BoundaryToLengthProcessor",
+    "TextTiling",
 ]
