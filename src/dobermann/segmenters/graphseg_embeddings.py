@@ -8,6 +8,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 from transformers import logging as hf_logging
 
 from .abstract import SegmentationResult, Segmenter
+from ..embeddings import Embedder
 
 
 class GraphSegEmbeddings(Segmenter):
@@ -23,11 +24,11 @@ class GraphSegEmbeddings(Segmenter):
     6. Convert smoothed labels -> segment lengths
     """
 
-    def __init__(self, model: str):
+    def __init__(self, embedder: Embedder):
         logging.getLogger("sentence_transformers").setLevel(logging.ERROR)
         hf_logging.set_verbosity_error()
-        self.model = SentenceTransformer(model)
 
+        self.embedder = embedder
     # --------------------------------------------------
     # MAIN
     # --------------------------------------------------
@@ -35,7 +36,7 @@ class GraphSegEmbeddings(Segmenter):
     def _segment(self, sentences: list[str]) -> SegmentationResult:
         start = time.perf_counter()
 
-        embeddings = self._vectorize(sentences)
+        embeddings = self.embedder.embed(sentences)
         sim_matrix = self._similarity_matrix(embeddings)
 
         graph = self._build_graph(sim_matrix)
