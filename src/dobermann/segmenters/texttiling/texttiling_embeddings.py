@@ -1,10 +1,6 @@
 import logging
 import time
 
-import numpy as np
-from scipy.ndimage import uniform_filter1d
-from scipy.signal import find_peaks
-from sklearn.metrics.pairwise import cosine_similarity
 from transformers import logging as hf_logging
 
 from ...embeddings import Embedder
