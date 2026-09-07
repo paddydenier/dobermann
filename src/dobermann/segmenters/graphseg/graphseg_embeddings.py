@@ -1,15 +1,15 @@
 import logging
 import time
 
-import networkx as nx
 import numpy as np
-from dobermann.segmenters.graphseg.community.base import CommunityDetector
 from transformers import logging as hf_logging
 
 from dobermann.embeddings import Embedder
+from dobermann.segmenters.graphseg.community.base import CommunityDetector
 
 from ..abstract import SegmentationResult, Segmenter
 from .graph import GraphBuilder
+from .labeling.base import Labeler
 from .similarity_matrix import SimilarityMatrix
 
 
@@ -31,7 +31,8 @@ class GraphSegEmbeddings(Segmenter):
         embedder: Embedder,
         similarity: SimilarityMatrix,
         graph: GraphBuilder,
-        community_detector=CommunityDetector,
+        community_detector: CommunityDetector,
+        labeler: Labeler,
     ):
         logging.getLogger("sentence_transformers").setLevel(logging.ERROR)
         hf_logging.set_verbosity_error()
@@ -40,6 +41,7 @@ class GraphSegEmbeddings(Segmenter):
         self.similarity = similarity
         self.graph = graph
         self.community = community_detector
+        self.labeler = labeler
 
     # --------------------------------------------------
     # MAIN
@@ -55,13 +57,14 @@ class GraphSegEmbeddings(Segmenter):
 
         communities = self.community.detect(graph)
 
-        labels = self._communities_to_labels(
-            communities=communities,
-            n_sentences=len(sentences),
-        )
+        # TODO: convert to module
 
+        labels = self.labeler.label(communities=communities, n_sentences=len(sentences))
+
+        # TODO: convert to module
         smoothed_labels = self._smooth_labels(labels, window=2)
 
+        # TODO: convert to module
         segment_lengths = self._labels_to_segments(smoothed_labels)
 
         runtime = time.perf_counter() - start
@@ -80,51 +83,6 @@ class GraphSegEmbeddings(Segmenter):
             runtime=runtime,
             metadata=metadata,
         )
-
-    # --------------------------------------------------
-    # COMMUNITIES
-    # --------------------------------------------------
-
-    def _communities(self, graph: nx.Graph) -> list[list[int]]:
-        """
-        Greedy modularity clustering.
-        """
-
-        communities = nx.algorithms.community.greedy_modularity_communities(
-            graph,
-            weight="weight",
-        )
-
-        return [sorted(list(c)) for c in communities]
-
-    # --------------------------------------------------
-    # COMMUNITIES -> LABELS
-    # --------------------------------------------------
-
-    def _communities_to_labels(
-        self,
-        communities: list[list[int]],
-        n_sentences: int,
-    ) -> list[int]:
-        """
-        Convert unordered communities into sentence-order labels.
-        """
-
-        labels = [-1] * n_sentences
-
-        for cid, community in enumerate(communities):
-            for idx in community:
-                labels[idx] = cid
-
-        # isolated nodes remain unique singleton labels
-        next_label = len(communities)
-
-        for i in range(n_sentences):
-            if labels[i] == -1:
-                labels[i] = next_label
-                next_label += 1
-
-        return labels
 
     # --------------------------------------------------
     # LABEL SMOOTHING

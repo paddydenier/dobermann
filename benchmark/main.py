@@ -1,6 +1,7 @@
 from dataclasses import fields
 from numbers import Number
 
+from dobermann.segmenters.graphseg.labeling.community import CommunityLabeler
 from sentence_transformers import SentenceTransformer
 
 from benchmark.loader import DataHandler
@@ -59,6 +60,7 @@ def main():
             CosineSimilarityMatrix(),
             WeightedGraphBuilder(),
             GreedyModularityCommunityDetector(),
+            CommunityLabeler(),
         ),
     }
 
