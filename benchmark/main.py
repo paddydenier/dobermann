@@ -18,6 +18,8 @@ from dobermann.segmenters.graphseg.community.greedy_modularity import (
     GreedyModularityCommunityDetector,
 )
 
+from dobermann.segmenters.graphseg.smoothing.majority_vote import MajorityVoteSmoother
+
 
 def evaluate_segmenter(segmenter, samples, evaluator):
     results = []
@@ -61,6 +63,7 @@ def main():
             WeightedGraphBuilder(),
             GreedyModularityCommunityDetector(),
             CommunityLabeler(),
+            MajorityVoteSmoother(),
         ),
     }
 

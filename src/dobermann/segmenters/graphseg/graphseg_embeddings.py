@@ -11,6 +11,7 @@ from ..abstract import SegmentationResult, Segmenter
 from .graph import GraphBuilder
 from .labeling.base import Labeler
 from .similarity_matrix import SimilarityMatrix
+from .smoothing.base import Smoother
 
 
 class GraphSegEmbeddings(Segmenter):
@@ -33,6 +34,7 @@ class GraphSegEmbeddings(Segmenter):
         graph: GraphBuilder,
         community_detector: CommunityDetector,
         labeler: Labeler,
+        smoother: Smoother,
     ):
         logging.getLogger("sentence_transformers").setLevel(logging.ERROR)
         hf_logging.set_verbosity_error()
@@ -42,29 +44,20 @@ class GraphSegEmbeddings(Segmenter):
         self.graph = graph
         self.community = community_detector
         self.labeler = labeler
-
-    # --------------------------------------------------
-    # MAIN
-    # --------------------------------------------------
+        self.smoother = smoother
 
     def _segment(self, sentences: list[str]) -> SegmentationResult:
         start = time.perf_counter()
 
         embeddings = self.embedder.embed(sentences)
         sim_matrix = self.similarity.compute(embeddings)
-
         graph = self.graph.build(sim_matrix)
-
         communities = self.community.detect(graph)
-
-        # TODO: convert to module
-
         labels = self.labeler.label(communities=communities, n_sentences=len(sentences))
+        smoothed_labels = self.smoother.smooth(labels, window=2)
 
-        # TODO: convert to module
-        smoothed_labels = self._smooth_labels(labels, window=2)
-
-        # TODO: convert to module
+        # TODO: convert to module: "post-processing" -> could be shared for both
+        # take some kind of stracture, return segment lengths
         segment_lengths = self._labels_to_segments(smoothed_labels)
 
         runtime = time.perf_counter() - start
