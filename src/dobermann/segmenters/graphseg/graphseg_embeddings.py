@@ -3,13 +3,13 @@ import time
 
 import networkx as nx
 import numpy as np
-from sklearn.metrics.pairwise import cosine_similarity
 from transformers import logging as hf_logging
 
-from ..abstract import SegmentationResult, Segmenter
 from dobermann.embeddings import Embedder
-from .similarity_matrix import SimilarityMatrix
+
+from ..abstract import SegmentationResult, Segmenter
 from .graph import GraphBuilder
+from .similarity_matrix import SimilarityMatrix
 
 
 class GraphSegEmbeddings(Segmenter):
@@ -44,9 +44,7 @@ class GraphSegEmbeddings(Segmenter):
 
         embeddings = self.embedder.embed(sentences)
         sim_matrix = self.similarity.compute(embeddings)
-        # sim_matrix = self._similarity_matrix(embeddings)
 
-        # graph = self._build_graph(sim_matrix)
         graph = self.graph.build(sim_matrix)
 
         communities = self._communities(graph)
@@ -76,61 +74,6 @@ class GraphSegEmbeddings(Segmenter):
             runtime=runtime,
             metadata=metadata,
         )
-
-    # --------------------------------------------------
-    # VECTORIZE
-    # --------------------------------------------------
-
-    def _vectorize(self, sentences: list[str]) -> np.ndarray:
-        return self.model.encode(sentences)
-
-    # --------------------------------------------------
-    # SIMILARITY
-    # --------------------------------------------------
-
-    def _similarity_matrix(self, embeddings: np.ndarray) -> np.ndarray:
-        return cosine_similarity(embeddings)
-
-    # --------------------------------------------------
-    # GRAPH BUILDING
-    # --------------------------------------------------
-
-    def _build_graph(
-        self,
-        sim_matrix: np.ndarray,
-        max_distance: int = 15,
-        min_similarity: float = 0.30,
-        decay: float = 0.15,
-    ) -> nx.Graph:
-        """
-        Weighted graph.
-
-        Edge weight:
-            similarity * exp(-decay * distance)
-
-        Keeps softer structure than hard thresholding.
-        """
-
-        n = len(sim_matrix)
-        G = nx.Graph()
-
-        for i in range(n):
-            G.add_node(i)
-
-        for i in range(n):
-            for j in range(i + 1, min(n, i + max_distance + 1)):
-                sim = float(sim_matrix[i, j])
-
-                if sim < min_similarity:
-                    continue
-
-                distance = abs(i - j)
-                weight = sim * np.exp(-decay * distance)
-
-                if weight > 0:
-                    G.add_edge(i, j, weight=weight)
-
-        return G
 
     # --------------------------------------------------
     # COMMUNITIES
