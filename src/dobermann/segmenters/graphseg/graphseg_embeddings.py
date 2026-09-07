@@ -3,6 +3,7 @@ import time
 
 import networkx as nx
 import numpy as np
+from dobermann.segmenters.graphseg.community.base import CommunityDetector
 from transformers import logging as hf_logging
 
 from dobermann.embeddings import Embedder
@@ -26,7 +27,11 @@ class GraphSegEmbeddings(Segmenter):
     """
 
     def __init__(
-        self, embedder: Embedder, similarity: SimilarityMatrix, graph: GraphBuilder
+        self,
+        embedder: Embedder,
+        similarity: SimilarityMatrix,
+        graph: GraphBuilder,
+        community_detector=CommunityDetector,
     ):
         logging.getLogger("sentence_transformers").setLevel(logging.ERROR)
         hf_logging.set_verbosity_error()
@@ -34,6 +39,7 @@ class GraphSegEmbeddings(Segmenter):
         self.embedder = embedder
         self.similarity = similarity
         self.graph = graph
+        self.community = community_detector
 
     # --------------------------------------------------
     # MAIN
@@ -47,7 +53,7 @@ class GraphSegEmbeddings(Segmenter):
 
         graph = self.graph.build(sim_matrix)
 
-        communities = self._communities(graph)
+        communities = self.community.detect(graph)
 
         labels = self._communities_to_labels(
             communities=communities,
