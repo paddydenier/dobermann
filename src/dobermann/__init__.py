@@ -3,6 +3,10 @@ from .document import Document
 from .embeddings import Embedder, SentenceTransformerEmbedder
 from .evaluators import EvaluationResult, SegmentationEvaluator
 from .segmenters import GraphSegEmbeddings, SegmentationResult, TextTilingEmbeddings
+from .segmenters.graphseg.similarity_matrix import (
+    CosineSimilarityMatrix,
+    SimilarityMatrix,
+)
 from .segmenters.texttiling import TextTiling
 
 # import boundary
@@ -41,4 +45,6 @@ __all__ = [
     "PostProcessor",
     "BoundaryToLengthProcessor",
     "TextTiling",
+    "SimilarityMatrix",
+    "CosineSimilarityMatrix",
 ]

@@ -6,8 +6,9 @@ import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 from transformers import logging as hf_logging
 
-from .abstract import SegmentationResult, Segmenter
-from ..embeddings import Embedder
+from ..abstract import SegmentationResult, Segmenter
+from dobermann.embeddings import Embedder
+from .similarity_matrix import SimilarityMatrix
 
 
 class GraphSegEmbeddings(Segmenter):
@@ -23,11 +24,12 @@ class GraphSegEmbeddings(Segmenter):
     6. Convert smoothed labels -> segment lengths
     """
 
-    def __init__(self, embedder: Embedder):
+    def __init__(self, embedder: Embedder, similarity: SimilarityMatrix):
         logging.getLogger("sentence_transformers").setLevel(logging.ERROR)
         hf_logging.set_verbosity_error()
 
         self.embedder = embedder
+        self.similarity = similarity
 
     # --------------------------------------------------
     # MAIN
@@ -37,7 +39,8 @@ class GraphSegEmbeddings(Segmenter):
         start = time.perf_counter()
 
         embeddings = self.embedder.embed(sentences)
-        sim_matrix = self._similarity_matrix(embeddings)
+        sim_matrix = self.similarity.compute(embeddings)
+        # sim_matrix = self._similarity_matrix(embeddings)
 
         graph = self._build_graph(sim_matrix)
         communities = self._communities(graph)

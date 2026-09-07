@@ -1,5 +1,5 @@
 from .abstract import SegmentationResult
-from .graphseg_embeddings import GraphSegEmbeddings
+from .graphseg import CosineSimilarityMatrix, GraphSegEmbeddings, SimilarityMatrix
 from .texttiling import (
     AdaptiveValleyBoundaryDetector,
     BoundaryDetector,
@@ -7,8 +7,8 @@ from .texttiling import (
     MovingAverageSmoother,
     PostProcessor,
     Smoother,
-    TextTilingEmbeddings,
     TextTiling,
+    TextTilingEmbeddings,
 )
 
 __all__ = [
@@ -22,4 +22,6 @@ __all__ = [
     "PostProcessor",
     "BoundaryToLengthProcessor",
     "TextTiling",
+    "SimilarityMatrix",
+    "CosineSimilarityMatrix",
 ]

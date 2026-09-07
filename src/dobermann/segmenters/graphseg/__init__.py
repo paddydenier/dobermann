@@ -1,5 +1,4 @@
 from .graphseg_embeddings import GraphSegEmbeddings
+from .similarity_matrix import CosineSimilarityMatrix, SimilarityMatrix
 
-__all__ = [
-    "GraphSegEmbeddings",
-]
+__all__ = ["GraphSegEmbeddings", "SimilarityMatrix", "CosineSimilarityMatrix"]
