@@ -1,5 +1,11 @@
 from .abstract import SegmentationResult
-from .graphseg import CosineSimilarityMatrix, GraphSegEmbeddings, SimilarityMatrix
+from .graphseg import (
+    CosineSimilarityMatrix,
+    GraphBuilder,
+    GraphSegEmbeddings,
+    SimilarityMatrix,
+    WeightedGraphBuilder,
+)
 from .texttiling import (
     AdaptiveValleyBoundaryDetector,
     BoundaryDetector,
@@ -24,4 +30,6 @@ __all__ = [
     "TextTiling",
     "SimilarityMatrix",
     "CosineSimilarityMatrix",
+    "GraphBuilder",
+    "WeightedGraphBuilder",
 ]

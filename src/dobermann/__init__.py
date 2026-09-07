@@ -3,6 +3,7 @@ from .document import Document
 from .embeddings import Embedder, SentenceTransformerEmbedder
 from .evaluators import EvaluationResult, SegmentationEvaluator
 from .segmenters import GraphSegEmbeddings, SegmentationResult, TextTilingEmbeddings
+from .segmenters.graphseg.graph import GraphBuilder, WeightedGraphBuilder
 from .segmenters.graphseg.similarity_matrix import (
     CosineSimilarityMatrix,
     SimilarityMatrix,
@@ -47,4 +48,6 @@ __all__ = [
     "TextTiling",
     "SimilarityMatrix",
     "CosineSimilarityMatrix",
+    "GraphBuilder",
+    "WeightedGraphBuilder",
 ]

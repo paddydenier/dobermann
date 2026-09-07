@@ -9,6 +9,7 @@ from transformers import logging as hf_logging
 from ..abstract import SegmentationResult, Segmenter
 from dobermann.embeddings import Embedder
 from .similarity_matrix import SimilarityMatrix
+from .graph import GraphBuilder
 
 
 class GraphSegEmbeddings(Segmenter):
@@ -24,12 +25,15 @@ class GraphSegEmbeddings(Segmenter):
     6. Convert smoothed labels -> segment lengths
     """
 
-    def __init__(self, embedder: Embedder, similarity: SimilarityMatrix):
+    def __init__(
+        self, embedder: Embedder, similarity: SimilarityMatrix, graph: GraphBuilder
+    ):
         logging.getLogger("sentence_transformers").setLevel(logging.ERROR)
         hf_logging.set_verbosity_error()
 
         self.embedder = embedder
         self.similarity = similarity
+        self.graph = graph
 
     # --------------------------------------------------
     # MAIN
@@ -42,7 +46,9 @@ class GraphSegEmbeddings(Segmenter):
         sim_matrix = self.similarity.compute(embeddings)
         # sim_matrix = self._similarity_matrix(embeddings)
 
-        graph = self._build_graph(sim_matrix)
+        # graph = self._build_graph(sim_matrix)
+        graph = self.graph.build(sim_matrix)
+
         communities = self._communities(graph)
 
         labels = self._communities_to_labels(
