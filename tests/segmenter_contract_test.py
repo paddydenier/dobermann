@@ -1,12 +1,12 @@
 import pytest
 
-from dobermann import GraphSegEmbeddings, TextTilingEmbeddings
+from dobermann import GraphSeg, TextTiling
 
 
 @pytest.fixture(
     params=[
-        TextTilingEmbeddings("all-MiniLM-L6-v2"),
-        GraphSegEmbeddings("all-MiniLM-L6-v2"),
+        TextTiling(),
+        GraphSeg(),
     ]
 )
 def segmenter(request):

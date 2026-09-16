@@ -1,11 +1,31 @@
 # Public facing API
 from .document import Document
+from .embeddings import Embedder, SentenceTransformerEmbedder
 from .evaluators import EvaluationResult, SegmentationEvaluator
-from .segmenters import (
-    GraphSegEmbeddings,
-    SegmentationResult,
-    TextTilingEmbeddings,
+from .segmenters import GraphSegEmbeddings, SegmentationResult, TextTilingEmbeddings
+from .segmenters.graphseg.graph import GraphBuilder, WeightedGraphBuilder
+from .segmenters.graphseg.similarity_matrix import (
+    CosineSimilarityMatrix,
+    SimilarityMatrix,
 )
+from .segmenters.texttiling import TextTiling
+from .segmenters.graphseg import GraphSeg
+
+# import boundary
+from .segmenters.texttiling.boundaries import (
+    AdaptiveValleyBoundaryDetector,
+    BoundaryDetector,
+)
+from .segmenters.texttiling.postprocessor import (
+    BoundaryToLengthProcessor,
+    PostProcessor,
+)
+
+# import similarity
+from .segmenters.texttiling.similarity import CosineSimilarity, Similarity
+
+# import smoothing
+from .segmenters.texttiling.smoothing import MovingAverageSmoother, Smoother
 
 __all__ = [
     "Document",
@@ -15,4 +35,21 @@ __all__ = [
     "SegmentationEvaluator",
     "EvaluationResult",
     "SegmentationResult",
+    "SentenceTransformerEmbedder",
+    "Embedder",
+    "SentenceTransformerEmbedder",
+    "MovingAverageSmoother",
+    "Smoother",
+    "Similarity",
+    "CosineSimilarity",
+    "AdaptiveValleyBoundaryDetector",
+    "BoundaryDetector",
+    "PostProcessor",
+    "BoundaryToLengthProcessor",
+    "TextTiling",
+    "SimilarityMatrix",
+    "CosineSimilarityMatrix",
+    "GraphBuilder",
+    "WeightedGraphBuilder",
+    "GraphSeg",
 ]
