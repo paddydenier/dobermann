@@ -1,6 +1,6 @@
 [project]
 name = "dobermann"
-version = "0.1.1"
+version = "0.2.0"
 description = "Modern python library for discourse segmentation."
 readme = "README.md"
 authors = [
