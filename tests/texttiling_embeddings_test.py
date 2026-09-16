@@ -1,13 +1,11 @@
 import pytest
 
-from dobermann import TextTilingEmbeddings
-
-pytestmark = pytest.mark.skip(reason="Refactoring")
+from dobermann import TextTiling
 
 
 @pytest.fixture
 def segmenter():
-    return TextTilingEmbeddings("all-MiniLM-L6-v2")
+    return TextTiling()
 
 
 @pytest.fixture

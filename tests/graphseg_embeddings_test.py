@@ -1,14 +1,12 @@
 import numpy as np
 import pytest
 
-from dobermann import GraphSegEmbeddings
-
-pytestmark = pytest.mark.skip(reason="Refactoring")
+from dobermann import GraphSeg
 
 
 @pytest.fixture
 def segmenter():
-    return GraphSegEmbeddings("all-MiniLM-L6-v2")
+    return GraphSeg()
 
 
 @pytest.fixture

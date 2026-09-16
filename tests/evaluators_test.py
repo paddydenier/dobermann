@@ -2,8 +2,6 @@ import pytest
 
 from dobermann import SegmentationEvaluator
 
-pytestmark = pytest.mark.skip(reason="Refactoring")
-
 
 @pytest.fixture
 def evaluator():

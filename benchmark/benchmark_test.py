@@ -3,8 +3,6 @@ import pytest
 from benchmark.loader import DataHandler
 from benchmark.types import DataSet
 
-pytestmark = pytest.mark.skip(reason="Refactoring")
-
 
 @pytest.mark.parametrize("dataset", list(DataSet))
 def test_dataset_samples_does_not_crash(dataset):
