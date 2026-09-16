@@ -6,6 +6,7 @@ from transformers import logging as hf_logging
 
 from dobermann.embeddings import Embedder
 from dobermann.segmenters.graphseg.community.base import CommunityDetector
+from dobermann.segmenters.graphseg.postprocessor import PostProcessor
 
 from ..abstract import SegmentationResult, Segmenter
 from .graph import GraphBuilder
@@ -35,6 +36,7 @@ class GraphSegEmbeddings(Segmenter):
         community_detector: CommunityDetector,
         labeler: Labeler,
         smoother: Smoother,
+        postprocessor: PostProcessor,
     ):
         logging.getLogger("sentence_transformers").setLevel(logging.ERROR)
         hf_logging.set_verbosity_error()
@@ -45,6 +47,7 @@ class GraphSegEmbeddings(Segmenter):
         self.community = community_detector
         self.labeler = labeler
         self.smoother = smoother
+        self.postprocessor = postprocessor
 
     def _segment(self, sentences: list[str]) -> SegmentationResult:
         start = time.perf_counter()
@@ -58,7 +61,8 @@ class GraphSegEmbeddings(Segmenter):
 
         # TODO: convert to module: "post-processing" -> could be shared for both
         # take some kind of stracture, return segment lengths
-        segment_lengths = self._labels_to_segments(smoothed_labels)
+        # segment_lengths = self._labels_to_segments(smoothed_labels)
+        segment_lengths = self.postprocessor.process(smoothed_labels)
 
         runtime = time.perf_counter() - start
 

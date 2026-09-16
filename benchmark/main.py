@@ -1,24 +1,16 @@
 from dataclasses import fields
 from numbers import Number
 
-from dobermann.segmenters.graphseg.labeling.community import CommunityLabeler
-from sentence_transformers import SentenceTransformer
 
 from benchmark.loader import DataHandler
 from benchmark.types import DataSet
 from dobermann import (
-    CosineSimilarityMatrix,
-    GraphSegEmbeddings,
     SegmentationEvaluator,
-    SentenceTransformerEmbedder,
     TextTiling,
-    WeightedGraphBuilder,
-)
-from dobermann.segmenters.graphseg.community.greedy_modularity import (
-    GreedyModularityCommunityDetector,
 )
 
-from dobermann.segmenters.graphseg.smoothing.majority_vote import MajorityVoteSmoother
+
+from dobermann import GraphSeg
 
 
 def evaluate_segmenter(segmenter, samples, evaluator):
@@ -52,19 +44,9 @@ def main():
     samples = DataHandler.samples(DataSet.CHOI)
     evaluator = SegmentationEvaluator()
 
-    model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
-    embedder = SentenceTransformerEmbedder(model)
-
     segmenters = {
         "TextTiling": TextTiling(),
-        "GraphSegEmbeddings": GraphSegEmbeddings(
-            embedder,
-            CosineSimilarityMatrix(),
-            WeightedGraphBuilder(),
-            GreedyModularityCommunityDetector(),
-            CommunityLabeler(),
-            MajorityVoteSmoother(),
-        ),
+        "GraphSegEmbeddings": GraphSeg(),
     }
 
     all_results = {}

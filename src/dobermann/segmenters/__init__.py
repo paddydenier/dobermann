@@ -5,6 +5,7 @@ from .graphseg import (
     GraphSegEmbeddings,
     SimilarityMatrix,
     WeightedGraphBuilder,
+    GraphSeg,
 )
 from .texttiling import (
     AdaptiveValleyBoundaryDetector,
@@ -32,4 +33,5 @@ __all__ = [
     "CosineSimilarityMatrix",
     "GraphBuilder",
     "WeightedGraphBuilder",
+    "GraphSeg",
 ]

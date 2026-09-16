@@ -9,6 +9,7 @@ from .segmenters.graphseg.similarity_matrix import (
     SimilarityMatrix,
 )
 from .segmenters.texttiling import TextTiling
+from .segmenters.graphseg import GraphSeg
 
 # import boundary
 from .segmenters.texttiling.boundaries import (
@@ -50,4 +51,5 @@ __all__ = [
     "CosineSimilarityMatrix",
     "GraphBuilder",
     "WeightedGraphBuilder",
+    "GraphSeg",
 ]
