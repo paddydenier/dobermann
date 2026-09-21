@@ -4,22 +4,14 @@ import time
 from transformers import logging as hf_logging
 
 from ...embeddings import Embedder
-from ..abstract import SegmentationResult, Segmenter
+from ..abstract import SegmentationResult
 from .boundaries import BoundaryDetector
 from .postprocessor import PostProcessor  # needs better naming
 from .similarity import Similarity
 from .smoothing import Smoother
 
-# no need to know implementation, just the abstraction
 
-# TODO list for refactoring into components
-# TODO: move TextTilingEmbeddings into a texttiling/ folder
-# TODO: deconstruct each pipeline function into components and implement here
-
-# NOTE: don't set defaults here, use a factory/builder
-
-
-class TextTilingEmbeddings(Segmenter):
+class TextTilingEmbeddings:
     """Embedding-based TextTiling segmentation.
 
     This segmenter replaces lexical similarity with sentence
@@ -53,7 +45,7 @@ class TextTilingEmbeddings(Segmenter):
         logging.getLogger("sentence_transformers").setLevel(logging.ERROR)
         hf_logging.set_verbosity_error()
 
-    def _segment(self, sentences: list[str]) -> SegmentationResult:
+    def segment(self, sentences: list[str]) -> SegmentationResult:
         start = time.perf_counter()
 
         embeddings = self.embedder.embed(sentences)

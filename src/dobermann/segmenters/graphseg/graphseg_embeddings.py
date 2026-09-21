@@ -7,14 +7,14 @@ from dobermann.embeddings import Embedder
 from dobermann.segmenters.graphseg.community.base import CommunityDetector
 from dobermann.segmenters.graphseg.postprocessor import PostProcessor
 
-from ..abstract import SegmentationResult, Segmenter
+from ..abstract import SegmentationResult
 from .graph import GraphBuilder
 from .labeling.base import Labeler
 from .similarity_matrix import SimilarityMatrix
 from .smoothing.base import Smoother
 
 
-class GraphSegEmbeddings(Segmenter):
+class GraphSegEmbeddings:
     """
     Improved GraphSeg-style topic segmentation using sentence embeddings.
 
@@ -48,7 +48,7 @@ class GraphSegEmbeddings(Segmenter):
         self.smoother = smoother
         self.postprocessor = postprocessor
 
-    def _segment(self, sentences: list[str]) -> SegmentationResult:
+    def segment(self, sentences: list[str]) -> SegmentationResult:
         start = time.perf_counter()
 
         embeddings = self.embedder.embed(sentences)

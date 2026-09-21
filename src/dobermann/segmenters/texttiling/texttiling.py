@@ -1,38 +1,50 @@
-from dobermann.segmenters.abstract import SegmentationResult
 from sentence_transformers import SentenceTransformer
 
-from ...embeddings import Embedder, SentenceTransformerEmbedder
-from ...preprocessors import PreProcessor, IdentityPreProcessor
-from .boundaries import AdaptiveValleyBoundaryDetector, BoundaryDetector
-from .postprocessor import BoundaryToLengthProcessor, PostProcessor
-from .similarity import CosineSimilarity, Similarity
-from .smoothing import MovingAverageSmoother, Smoother
+from dobermann.segmenters.abstract import SegmentationResult
+
+from ...embeddings import SentenceTransformerEmbedder
+from ...preprocessors import IdentityPreProcessor, PreProcessor
+from .boundaries import AdaptiveValleyBoundaryDetector
+from .postprocessor import BoundaryToLengthProcessor
+from .similarity import CosineSimilarity
+from .smoothing import MovingAverageSmoother
 from .texttiling_embeddings import TextTilingEmbeddings
 
 
-class TextTiling(TextTilingEmbeddings):
+class TextTiling:
+    """High-level facade for TextTiling topic segmentation."""
+
     def __init__(
         self,
-        pre_processor: PreProcessor | None = None,
-        embedder: Embedder | None = None,
-        similarity: Similarity | None = None,
-        smoother: Smoother | None = None,
-        boundary: BoundaryDetector | None = None,
-        post_procesor: PostProcessor | None = None,
+        input_processor: PreProcessor,
+        algorithm: TextTilingEmbeddings,
     ):
-        self.pre_processor = pre_processor or IdentityPreProcessor()
-        super().__init__(
-            embedder=embedder
-            or SentenceTransformerEmbedder(
+        self.input_processor = input_processor
+        self.algorithm = algorithm
+
+    @classmethod
+    def default(
+        cls,
+        input_processor: PreProcessor | None = None,
+    ) -> "TextTiling":
+        if input_processor is None:
+            input_processor = IdentityPreProcessor()
+
+        algorithm = TextTilingEmbeddings(
+            embedder=SentenceTransformerEmbedder(
                 SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
             ),
-            similarity=similarity or CosineSimilarity(),
-            smoother=smoother or MovingAverageSmoother(),
-            boundary=(boundary or AdaptiveValleyBoundaryDetector()),
-            post_procesor=(post_procesor or BoundaryToLengthProcessor()),
+            similarity=CosineSimilarity(),
+            smoother=MovingAverageSmoother(),
+            boundary=AdaptiveValleyBoundaryDetector(),
+            post_procesor=BoundaryToLengthProcessor(),
         )
 
-        def segment(self, input) -> SegmentationResult:
-            sentences = self.pre_processor.process(input)
-            # TODO: add output processor
-            return super().segment(sentences)
+        return cls(
+            input_processor=input_processor,
+            algorithm=algorithm,
+        )
+
+    def segment(self, input) -> SegmentationResult:
+        sentences = self.input_processor.process(input)
+        return self.algorithm.segment(sentences)
