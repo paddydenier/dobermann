@@ -5,8 +5,8 @@ from dobermann import GraphSeg, TextTiling
 
 @pytest.fixture(
     params=[
-        TextTiling(),
-        GraphSeg(),
+        TextTiling.default(),
+        GraphSeg.default(),
     ]
 )
 def segmenter(request):
