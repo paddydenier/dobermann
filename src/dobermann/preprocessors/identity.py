@@ -12,4 +12,7 @@ class IdentityPreProcessor(PreProcessor):
         if not sentences:
             raise ValueError("sentences must be nonempty")
 
+        if len(sentences) == 0:
+            raise ValueError("sentences must be nonempty")
+
         return sentences

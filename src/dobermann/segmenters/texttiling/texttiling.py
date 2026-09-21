@@ -10,8 +10,10 @@ from .similarity import CosineSimilarity
 from .smoothing import MovingAverageSmoother
 from .texttiling_embeddings import TextTilingEmbeddings
 
+from ..abstract import Segmenter
 
-class TextTiling:
+
+class TextTiling(Segmenter):
     """High-level facade for TextTiling topic segmentation."""
 
     def __init__(

@@ -13,8 +13,10 @@ from .labeling.base import Labeler
 from .similarity_matrix import SimilarityMatrix
 from .smoothing.base import Smoother
 
+from ..abstract import Segmenter
 
-class GraphSegEmbeddings:
+
+class GraphSegEmbeddings(Segmenter):
     """
     Improved GraphSeg-style topic segmentation using sentence embeddings.
 

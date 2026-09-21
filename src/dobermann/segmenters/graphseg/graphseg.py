@@ -4,6 +4,7 @@ from dobermann.segmenters.abstract import SegmentationResult
 
 from ...embeddings import SentenceTransformerEmbedder
 from ...preprocessors import IdentityPreProcessor, PreProcessor
+from ..abstract import Segmenter
 from .community import GreedyModularityCommunityDetector
 from .graph import WeightedGraphBuilder
 from .graphseg_embeddings import GraphSegEmbeddings
@@ -13,7 +14,7 @@ from .similarity_matrix import CosineSimilarityMatrix
 from .smoothing import MajorityVoteSmoother
 
 
-class GraphSeg:
+class GraphSeg(Segmenter):
     """High-level facade for GraphSeg topic segmentation."""
 
     def __init__(

@@ -10,8 +10,10 @@ from .postprocessor import PostProcessor  # needs better naming
 from .similarity import Similarity
 from .smoothing import Smoother
 
+from ..abstract import Segmenter
 
-class TextTilingEmbeddings:
+
+class TextTilingEmbeddings(Segmenter):
     """Embedding-based TextTiling segmentation.
 
     This segmenter replaces lexical similarity with sentence
