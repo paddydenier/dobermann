@@ -74,5 +74,8 @@ class TextTilingEmbeddings(Segmenter):
         }
 
         return SegmentationResult(
-            segment_lengths=segment_lengths, runtime=runtime, metadata=metadata
+            segment_lengths=segment_lengths,
+            runtime=runtime,
+            metadata=metadata,
+            sentences=sentences,
         )

@@ -18,6 +18,7 @@ class SegmentationResult:
     """
 
     segment_lengths: list[int]
+    sentences: list[str]
     runtime: float
     # method: str
     metadata: dict = field(default_factory=dict)
@@ -30,16 +31,9 @@ class SegmentationResult:
             yield start, end
             start = end
 
-    # TODO: redesign akwared api
-    # curr: result.split(document.sentences)
-    # goal: result.split()
-    def split(self, sentences: list[str]) -> list[list[str]]:
-        chunks = []
-
-        for start, end in self.iter_spans():
-            chunks.append(sentences[start:end])
-
-        return chunks
+    @property
+    def segments(self) -> list[list[str]]:
+        return [self.sentences[start:end] for start, end in self.iter_spans()]
 
 
 class Segmenter(ABC):

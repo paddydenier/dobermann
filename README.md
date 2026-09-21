@@ -43,7 +43,7 @@ document = Document.from_text(text)
 segmenter = GraphSeg()
 segmentation_result = segmenter.segment(document.sentences)
 
-print(segmentation_result.split(document.sentences))
+print(segmentation_result.segments)
 ```
 <!-- END:quickstart -->
 

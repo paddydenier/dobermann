@@ -75,6 +75,7 @@ class GraphSegEmbeddings(Segmenter):
         }
 
         return SegmentationResult(
+            sentences=sentences,
             segment_lengths=segment_lengths,
             runtime=runtime,
             metadata=metadata,
