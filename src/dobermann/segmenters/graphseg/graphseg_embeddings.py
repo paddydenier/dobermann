@@ -1,18 +1,19 @@
 import logging
 import time
 
-import numpy as np
 from transformers import logging as hf_logging
 
 from dobermann.embeddings import Embedder
 from dobermann.segmenters.graphseg.community.base import CommunityDetector
 from dobermann.segmenters.graphseg.postprocessor import PostProcessor
 
-from ..abstract import SegmentationResult, Segmenter
+from ..abstract import SegmentationResult
 from .graph import GraphBuilder
 from .labeling.base import Labeler
 from .similarity_matrix import SimilarityMatrix
 from .smoothing.base import Smoother
+
+from ..abstract import Segmenter
 
 
 class GraphSegEmbeddings(Segmenter):
@@ -49,7 +50,7 @@ class GraphSegEmbeddings(Segmenter):
         self.smoother = smoother
         self.postprocessor = postprocessor
 
-    def _segment(self, sentences: list[str]) -> SegmentationResult:
+    def segment(self, sentences: list[str]) -> SegmentationResult:
         start = time.perf_counter()
 
         embeddings = self.embedder.embed(sentences)
@@ -76,65 +77,8 @@ class GraphSegEmbeddings(Segmenter):
         }
 
         return SegmentationResult(
+            sentences=sentences,
             segment_lengths=segment_lengths,
             runtime=runtime,
             metadata=metadata,
         )
-
-    # --------------------------------------------------
-    # LABEL SMOOTHING
-    # --------------------------------------------------
-
-    def _smooth_labels(
-        self,
-        labels: list[int],
-        window: int = 2,
-    ) -> list[int]:
-        """
-        Majority-vote smoothing.
-
-        Example:
-            A A B A A -> A A A A A
-        """
-
-        smoothed = labels.copy()
-        n = len(labels)
-
-        for i in range(n):
-            left = max(0, i - window)
-            right = min(n, i + window + 1)
-
-            neighborhood = labels[left:right]
-
-            values, counts = np.unique(neighborhood, return_counts=True)
-            majority = values[np.argmax(counts)]
-
-            smoothed[i] = int(majority)
-
-        return smoothed
-
-    # --------------------------------------------------
-    # LABELS -> SEGMENTS
-    # --------------------------------------------------
-
-    def _labels_to_segments(self, labels: list[int]) -> list[int]:
-        """
-        Convert contiguous labels into segment lengths.
-        """
-
-        lengths = []
-
-        current = labels[0]
-        run = 1
-
-        for i in range(1, len(labels)):
-            if labels[i] == current:
-                run += 1
-            else:
-                lengths.append(run)
-                run = 1
-                current = labels[i]
-
-        lengths.append(run)
-
-        return lengths

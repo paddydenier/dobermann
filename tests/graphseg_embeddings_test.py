@@ -6,7 +6,7 @@ from dobermann import GraphSeg
 
 @pytest.fixture
 def segmenter():
-    return GraphSeg()
+    return GraphSeg.default()
 
 
 @pytest.fixture

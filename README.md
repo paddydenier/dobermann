@@ -40,10 +40,10 @@ text = "Cats are domesticated mammals that are commonly kept as pets. They belon
 
 document = Document.from_text(text)
 
-segmenter = GraphSeg()
+segmenter = GraphSeg.default()
 segmentation_result = segmenter.segment(document.sentences)
 
-print(segmentation_result.split(document.sentences))
+print(segmentation_result.segments)
 ```
 <!-- END:quickstart -->
 

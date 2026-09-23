@@ -5,7 +5,7 @@ from dobermann import TextTiling
 
 @pytest.fixture
 def segmenter():
-    return TextTiling()
+    return TextTiling.default()
 
 
 @pytest.fixture

@@ -10,9 +10,6 @@ from dobermann import (
 )
 
 
-from dobermann import GraphSeg
-
-
 def evaluate_segmenter(segmenter, samples, evaluator):
     results = []
 
@@ -45,8 +42,8 @@ def main():
     evaluator = SegmentationEvaluator()
 
     segmenters = {
-        "TextTiling": TextTiling(),
-        "GraphSegEmbeddings": GraphSeg(),
+        "TextTiling": TextTiling.default(),
+        # "GraphSegEmbeddings": GraphSeg.default(),
     }
 
     all_results = {}
