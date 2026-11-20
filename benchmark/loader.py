@@ -18,7 +18,7 @@ class DataHandler:
         base_path = Path(__file__).parent / "datasets"
         file_path = base_path / data_set.value
 
-        with open(file_path, "r") as f:
+        with open(file_path, "r", encoding="utf-8") as f:
             raw_samples = json.load(f)
 
         return [
