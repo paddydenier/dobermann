@@ -1,17 +1,21 @@
+from functools import cache
 from typing import Annotated
 
-from fastapi import Body, FastAPI, HTTPException
+from fastapi import Body, Depends, FastAPI, HTTPException
 
-from dobermann import Document
-from dobermann.segmenters import GraphSegEmbeddings, TextTilingEmbeddings
+from dobermann import Document, GraphSeg, TextTiling
+from dobermann.segmenters.abstract import Segmenter
 
 app = FastAPI()
 
 
-segmenters = {
-    "text_tiling": TextTilingEmbeddings("all-MiniLM-L6-v2"),
-    "graph_seg": GraphSegEmbeddings("all-MiniLM-L6-v2"),
-}
+@cache
+def get_segmenters() -> dict[str, Segmenter]:
+    """Build the available segmenters once, on first use."""
+    return {
+        "text_tiling": TextTiling.default(),
+        "graph_seg": GraphSeg.default(),
+    }
 
 
 @app.get("/")
@@ -23,6 +27,7 @@ def root():
 def segment(
     algorithm: str,
     text: Annotated[str, Body()],
+    segmenters: Annotated[dict[str, Segmenter], Depends(get_segmenters)],
 ):
     if algorithm not in segmenters:
         raise HTTPException(
@@ -32,6 +37,12 @@ def segment(
 
     document = Document.from_text(text)
 
+    if not document.sentences:
+        raise HTTPException(
+            status_code=400,
+            detail="Text contains no sentences",
+        )
+
     result = segmenters[algorithm].segment(document.sentences)
 
-    return {"segments": result.split(document.sentences)}
+    return {"segments": [" ".join(segment) for segment in result.segments]}
