@@ -9,7 +9,7 @@ SNIPPETS = {
 
 
 def inject_snippet(content: str, key: str, file_path: Path) -> str:
-    code = file_path.read_text().strip()
+    code = file_path.read_text(encoding="utf-8").strip()
 
     replacement = f"<!-- BEGIN:{key} -->\n```python\n{code}\n```\n<!-- END:{key} -->"
 
@@ -22,12 +22,12 @@ def inject_snippet(content: str, key: str, file_path: Path) -> str:
 
 
 def main():
-    readme = README_PATH.read_text()
+    readme = README_PATH.read_text(encoding="utf-8")
 
     for key, path in SNIPPETS.items():
         readme = inject_snippet(readme, key, path)
 
-    README_PATH.write_text(readme)
+    README_PATH.write_text(readme, encoding="utf-8")
     print("README updated successfully.")
 
 
