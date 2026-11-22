@@ -62,10 +62,17 @@ def run(
                 f"{name} on {dataset} ({len(dataset_samples)} documents)",
                 file=sys.stderr,
             )
-            results[name][dataset] = [
-                _evaluate(index, sample, segmenter, evaluator)
-                for index, sample in enumerate(dataset_samples)
-            ]
+            documents = []
+
+            for index, sample in enumerate(dataset_samples):
+                try:
+                    documents.append(_evaluate(index, sample, segmenter, evaluator))
+                except ValueError as error:
+                    raise ValueError(
+                        f"{name} on {dataset} document {index}: {error}"
+                    ) from error
+
+            results[name][dataset] = documents
 
     return results
 
