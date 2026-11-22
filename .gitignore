@@ -11,3 +11,6 @@ wheels/
 
 # Docs build folder
 docs/build/
+
+# Local benchmark baselines
+.snapshots/
