@@ -120,3 +120,33 @@ def test_quick_and_full_baselines_are_separate(fake_cli, tmp_path):
 
     assert (tmp_path / "quick.json").exists()
     assert cli.main(["check", "--full"]) == 2
+
+
+def test_save_refuses_to_overwrite_baseline(fake_cli, tmp_path, capsys):
+    assert cli.main(["save"]) == 0
+    before = (tmp_path / "quick.json").read_bytes()
+    capsys.readouterr()
+
+    fake_cli["results"] = results(doc(0, [1, 3]))
+    assert cli.main(["save"]) == 2
+
+    assert (tmp_path / "quick.json").read_bytes() == before
+    assert "--force" in capsys.readouterr().err
+
+
+def test_save_with_force_replaces_baseline(fake_cli, tmp_path):
+    assert cli.main(["save"]) == 0
+    before = (tmp_path / "quick.json").read_bytes()
+
+    fake_cli["results"] = results(doc(0, [1, 3]))
+    assert cli.main(["save", "--force"]) == 0
+
+    assert (tmp_path / "quick.json").read_bytes() != before
+    assert cli.main(["check"]) == 0
+
+
+@pytest.mark.parametrize("command", ["run", "check"])
+def test_force_is_only_accepted_by_save(fake_cli, command):
+    with pytest.raises(SystemExit) as error:
+        cli.main([command, "--force"])
+    assert error.value.code == 2

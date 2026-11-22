@@ -1,8 +1,8 @@
 """Benchmark command line interface.
 
-python -m benchmark run   [--full]   print average metrics
-python -m benchmark save  [--full]   save results as the local baseline
-python -m benchmark check [--full]   compare results with the baseline
+python -m benchmark run   [--full]             print average metrics
+python -m benchmark save  [--full] [--force]   save results as the local baseline
+python -m benchmark check [--full]             compare results with the baseline
 """
 
 import argparse
@@ -36,6 +36,12 @@ def main(argv: list[str] | None = None) -> int:
             action="store_true",
             help=f"use all documents instead of the first {QUICK_LIMIT} per dataset",
         )
+        if name == "save":
+            command.add_argument(
+                "--force",
+                action="store_true",
+                help="replace an existing baseline",
+            )
 
     args = parser.parse_args(argv)
     mode = "full" if args.full else "quick"
@@ -47,6 +53,17 @@ def main(argv: list[str] | None = None) -> int:
                 f"No {mode} baseline found at {snapshot.path_for(mode)}.\n"
                 f"Run `python -m benchmark save{' --full' if args.full else ''}` "
                 "before making your change.",
+                file=sys.stderr,
+            )
+            return 2
+
+    if args.command == "save" and not args.force:
+        existing = snapshot.load(mode)
+        if existing is not None:
+            print(
+                f"A {mode} baseline already exists at {snapshot.path_for(mode)} "
+                f"({snapshot.format_meta(existing.meta)}).\n"
+                "Pass --force to replace it.",
                 file=sys.stderr,
             )
             return 2
