@@ -1,69 +1,20 @@
-from dataclasses import fields
-from numbers import Number
-
-
-from benchmark.loader import DataHandler
+from benchmark.runner import average, run
+from benchmark.segmenters import SEGMENTERS
 from benchmark.types import DataSet
-from dobermann import (
-    SegmentationEvaluator,
-    TextTiling,
-)
-
-
-def evaluate_segmenter(segmenter, samples, evaluator):
-    results = []
-
-    for i, sample in enumerate(samples):
-        print(f"Processing sample {i + 1}/{len(samples)}")
-
-        segmentation = segmenter.segment(sample.sentences)
-
-        result = evaluator.evaluate(
-            hyp_len=segmentation.segment_lengths,
-            ref_len=sample.segment_lengths,
-        )
-
-        results.append(result)
-
-    averages = {}
-
-    for field in fields(results[0]):
-        metric = field.name
-        values = [getattr(result, metric) for result in results]
-
-        if all(isinstance(value, Number) for value in values):
-            averages[metric] = sum(values) / len(values)
-
-    return averages
 
 
 def main():
-    samples = DataHandler.samples(DataSet.CHOI)
-    evaluator = SegmentationEvaluator()
-
-    segmenters = {
-        "TextTiling": TextTiling.default(),
-        # "GraphSegEmbeddings": GraphSeg.default(),
-    }
-
-    all_results = {}
-
-    for name, segmenter in segmenters.items():
-        print(f"\nRunning {name}...")
-
-        all_results[name] = evaluate_segmenter(
-            segmenter,
-            samples,
-            evaluator,
-        )
+    segmenters = {name: factory() for name, factory in SEGMENTERS.items()}
+    results = run(segmenters, [DataSet.CHOI])
 
     print("\n=== Average Results ===")
 
-    for name, averages in all_results.items():
-        print(f"\n{name}:")
+    for name, datasets in results.items():
+        for dataset, documents in datasets.items():
+            print(f"\n{name} ({dataset}):")
 
-        for metric, value in averages.items():
-            print(f"  {metric}: {value:.4f}")
+            for metric, value in average(documents).items():
+                print(f"  {metric}: {value:.4f}")
 
 
 if __name__ == "__main__":
