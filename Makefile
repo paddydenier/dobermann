@@ -38,11 +38,12 @@ backend:
 	uv run uvicorn api.main:app --reload --port $(PORT)
 
 # add FULL=1 to use all documents instead of the quick subset
+# add FORCE=1 to benchmark-save to replace an existing baseline
 benchmark:
 	uv run python -m benchmark run $(if $(FULL),--full)
 
 benchmark-save:
-	uv run python -m benchmark save $(if $(FULL),--full)
+	uv run python -m benchmark save $(if $(FULL),--full) $(if $(FORCE),--force)
 
 benchmark-check:
 	uv run python -m benchmark check $(if $(FULL),--full)
