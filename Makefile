@@ -2,7 +2,7 @@ PYTHON := uv run
 SRC := .
 PORT ?= 8000
 
-.PHONY: lint lint-check format format-check test docs docs-readme docs-clean docs-api docs-api-clean backend benchmark release
+.PHONY: lint lint-check format format-check test docs docs-readme docs-clean docs-api docs-api-clean backend benchmark benchmark-save benchmark-check release
 
 lint:
 	$(PYTHON) ruff check --fix $(SRC)
@@ -37,8 +37,15 @@ docs-api-clean:
 backend:
 	uv run uvicorn api.main:app --reload --port $(PORT)
 
+# add FULL=1 to use all documents instead of the quick subset
 benchmark:
-	uv run python -m benchmark.main
+	uv run python -m benchmark run $(if $(FULL),--full)
+
+benchmark-save:
+	uv run python -m benchmark save $(if $(FULL),--full)
+
+benchmark-check:
+	uv run python -m benchmark check $(if $(FULL),--full)
 
 # auto tag last commit based on current uv version
 # build: bump version to x.x.x
