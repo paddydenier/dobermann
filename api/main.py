@@ -32,6 +32,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     """
     settings = Settings.from_env()
     embedder = SentenceTransformerEmbedder.default(device=settings.device)
+    app.state.embedder = embedder
     app.state.segmenters = build_segmenters(embedder)
     yield
 
@@ -44,9 +45,28 @@ def get_segmenters(request: Request) -> dict[str, Segmenter]:
     return request.app.state.segmenters
 
 
+def get_embedder(request: Request) -> SentenceTransformerEmbedder:
+    """Return the embedder loaded at startup."""
+    return request.app.state.embedder
+
+
 @app.get("/")
 def root():
     return {"message": "Dobermann API is running"}
+
+
+@app.get("/health")
+def health(
+    embedder: Annotated[SentenceTransformerEmbedder, Depends(get_embedder)],
+):
+    return {"status": "ok", "device": embedder.device}
+
+
+@app.get("/algorithms")
+def algorithms(
+    segmenters: Annotated[dict[str, Segmenter], Depends(get_segmenters)],
+):
+    return {"algorithms": list(segmenters)}
 
 
 @app.post("/segment")
@@ -58,7 +78,10 @@ def segment(
     if algorithm not in segmenters:
         raise HTTPException(
             status_code=400,
-            detail=f"Unknown algorithm: {algorithm}",
+            detail=(
+                f"Unknown algorithm: {algorithm}. "
+                f"Available algorithms: {', '.join(segmenters)}"
+            ),
         )
 
     document = Document.from_text(text)

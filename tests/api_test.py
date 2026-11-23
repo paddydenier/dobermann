@@ -2,10 +2,11 @@ import zlib
 
 import numpy as np
 import pytest
+import torch
 from fastapi.testclient import TestClient
 
 from api.config import Settings
-from api.main import app, get_segmenters
+from api.main import app, get_embedder, get_segmenters
 from dobermann import Embedder, SegmentationResult, SentenceTransformerEmbedder
 
 # Without a `with` block, TestClient skips the lifespan, so no model is
@@ -41,6 +42,8 @@ class FakeSegmenter:
 
 class FakeEmbedder(Embedder):
     """Returns a deterministic random vector per sentence, without a model."""
+
+    device = "fake"
 
     def embed(self, sentences: list[str]) -> np.ndarray:
         return np.array(
@@ -108,7 +111,30 @@ def test_segment_unknown_algorithm(fake_segmenter):
     response = client.post("/segment?algorithm=invalid", json=TEXT)
 
     assert response.status_code == 400
-    assert response.json() == {"detail": "Unknown algorithm: invalid"}
+    assert response.json() == {
+        "detail": (
+            "Unknown algorithm: invalid. Available algorithms: text_tiling, graph_seg"
+        )
+    }
+    assert fake_segmenter.calls == []
+
+
+def test_health():
+    app.dependency_overrides[get_embedder] = FakeEmbedder
+    try:
+        response = client.get("/health")
+    finally:
+        app.dependency_overrides.clear()
+
+    assert response.status_code == 200
+    assert response.json() == {"status": "ok", "device": "fake"}
+
+
+def test_algorithms(fake_segmenter):
+    response = client.get("/algorithms")
+
+    assert response.status_code == 200
+    assert response.json() == {"algorithms": ["text_tiling", "graph_seg"]}
 
 
 @pytest.mark.parametrize("text", ["", "   "])
@@ -144,8 +170,10 @@ def test_segmenters_are_loaded_at_startup(fake_default_embedder, monkeypatch):
             assert segmenter.algorithm.embedder is embedder
 
         response = startup_client.post("/segment?algorithm=graph_seg", json=TEXT)
+        health = startup_client.get("/health")
 
     assert response.status_code == 200
+    assert health.json() == {"status": "ok", "device": "fake"}
     assert calls == [None]
 
 
@@ -194,3 +222,19 @@ def test_segment_with_default_segmenters(real_client, algorithm):
     assert segments
     assert all(isinstance(segment, str) for segment in segments)
     assert " ".join(segments) == " ".join(SENTENCES)
+
+
+def test_health_with_default_embedder(real_client):
+    response = real_client.get("/health")
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "status": "ok",
+        "device": "cuda:0" if torch.cuda.is_available() else "cpu",
+    }
+
+
+def test_algorithms_with_default_segmenters(real_client):
+    response = real_client.get("/algorithms")
+
+    assert response.json() == {"algorithms": ["text_tiling", "graph_seg"]}
