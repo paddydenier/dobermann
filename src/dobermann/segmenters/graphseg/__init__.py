@@ -1,11 +1,11 @@
 from .community import CommunityDetector, GreedyModularityCommunityDetector
 from .graph import GraphBuilder, WeightedGraphBuilder
+from .graphseg import GraphSeg
 from .graphseg_embeddings import GraphSegEmbeddings
 from .labeling import CommunityLabeler, Labeler
 from .postprocessor import LabelsToSegmentsPostProcessor, PostProcessor
 from .similarity_matrix import CosineSimilarityMatrix, SimilarityMatrix
 from .smoothing import MajorityVoteSmoother, Smoother
-from .graphseg import GraphSeg
 
 __all__ = [
     "GraphSegEmbeddings",

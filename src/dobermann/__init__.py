@@ -5,13 +5,13 @@ from .evaluators import EvaluationResult, SegmentationEvaluator
 from .preprocessors import IdentityPreProcessor, PreProcessor
 from .segmenters import GraphSegEmbeddings, SegmentationResult, TextTilingEmbeddings
 from .segmenters.abstract import Segmenter
+from .segmenters.graphseg import GraphSeg
 from .segmenters.graphseg.graph import GraphBuilder, WeightedGraphBuilder
 from .segmenters.graphseg.similarity_matrix import (
     CosineSimilarityMatrix,
     SimilarityMatrix,
 )
 from .segmenters.texttiling import TextTiling
-from .segmenters.graphseg import GraphSeg
 
 # import boundary
 from .segmenters.texttiling.boundaries import (

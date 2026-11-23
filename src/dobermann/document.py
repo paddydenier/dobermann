@@ -1,5 +1,5 @@
-from dataclasses import dataclass
 import re
+from dataclasses import dataclass
 
 _SENTENCE_END = re.compile(r"(?<=[.!?])(?:[\"']+)?\s+(?=[A-Z0-9])")
 

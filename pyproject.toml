@@ -50,8 +50,39 @@ pythonpath = ["."]
 [tool.ruff.lint]
 preview = true
 explicit-preview-rules = true
-# ruff defaults, plus enforcing explicit file encodings (preview rule)
-select = ["E4", "E7", "E9", "F", "PLW1514"]
+# ruff defaults, plus enforcing explicit file encodings (preview rule),
+# sorted imports and the public import boundaries
+select = ["E4", "E7", "E9", "F", "PLW1514", "I", "TID251", "TID252"]
+
+[tool.ruff.lint.per-file-ignores]
+# TID251 also resolves relative imports, so the package itself is exempt
+"src/**" = ["TID251"]
+
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "parents"
+
+[tool.ruff.lint.flake8-tidy-imports.banned-api]
+"dobermann.segmenters.abstract".msg = "Import from the public `dobermann` namespace (or `dobermann.segmenters.texttiling` / `.graphseg`) instead."
+"dobermann.segmenters.graphseg.community".msg = "Import from the public `dobermann` namespace (or `dobermann.segmenters.texttiling` / `.graphseg`) instead."
+"dobermann.segmenters.graphseg.graph".msg = "Import from the public `dobermann` namespace (or `dobermann.segmenters.texttiling` / `.graphseg`) instead."
+"dobermann.segmenters.graphseg.labeling".msg = "Import from the public `dobermann` namespace (or `dobermann.segmenters.texttiling` / `.graphseg`) instead."
+"dobermann.segmenters.graphseg.postprocessor".msg = "Import from the public `dobermann` namespace (or `dobermann.segmenters.texttiling` / `.graphseg`) instead."
+"dobermann.segmenters.graphseg.similarity_matrix".msg = "Import from the public `dobermann` namespace (or `dobermann.segmenters.texttiling` / `.graphseg`) instead."
+"dobermann.segmenters.graphseg.smoothing".msg = "Import from the public `dobermann` namespace (or `dobermann.segmenters.texttiling` / `.graphseg`) instead."
+"dobermann.segmenters.graphseg.graphseg".msg = "Import from the public `dobermann` namespace (or `dobermann.segmenters.texttiling` / `.graphseg`) instead."
+"dobermann.segmenters.graphseg.graphseg_embeddings".msg = "Import from the public `dobermann` namespace (or `dobermann.segmenters.texttiling` / `.graphseg`) instead."
+"dobermann.segmenters.texttiling.boundaries".msg = "Import from the public `dobermann` namespace (or `dobermann.segmenters.texttiling` / `.graphseg`) instead."
+"dobermann.segmenters.texttiling.postprocessor".msg = "Import from the public `dobermann` namespace (or `dobermann.segmenters.texttiling` / `.graphseg`) instead."
+"dobermann.segmenters.texttiling.similarity".msg = "Import from the public `dobermann` namespace (or `dobermann.segmenters.texttiling` / `.graphseg`) instead."
+"dobermann.segmenters.texttiling.smoothing".msg = "Import from the public `dobermann` namespace (or `dobermann.segmenters.texttiling` / `.graphseg`) instead."
+"dobermann.segmenters.texttiling.texttiling".msg = "Import from the public `dobermann` namespace (or `dobermann.segmenters.texttiling` / `.graphseg`) instead."
+"dobermann.segmenters.texttiling.texttiling_embeddings".msg = "Import from the public `dobermann` namespace (or `dobermann.segmenters.texttiling` / `.graphseg`) instead."
+"dobermann.embeddings.base".msg = "Import from the public `dobermann` namespace (or `dobermann.segmenters.texttiling` / `.graphseg`) instead."
+"dobermann.embeddings.sentence_transformer".msg = "Import from the public `dobermann` namespace (or `dobermann.segmenters.texttiling` / `.graphseg`) instead."
+"dobermann.preprocessors.base".msg = "Import from the public `dobermann` namespace (or `dobermann.segmenters.texttiling` / `.graphseg`) instead."
+"dobermann.preprocessors.identity".msg = "Import from the public `dobermann` namespace (or `dobermann.segmenters.texttiling` / `.graphseg`) instead."
+"dobermann.evaluators.segmentation_evaluator".msg = "Import from the public `dobermann` namespace (or `dobermann.segmenters.texttiling` / `.graphseg`) instead."
+"dobermann.document".msg = "Import from the public `dobermann` namespace (or `dobermann.segmenters.texttiling` / `.graphseg`) instead."
 
 [tool.deptry.per_rule_ignores]
 # spacy is declared but not imported yet; keep/drop decision deferred
