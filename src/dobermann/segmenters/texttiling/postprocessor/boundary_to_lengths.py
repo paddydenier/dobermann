@@ -1,7 +1,7 @@
-from .base import PostProcessor
+from .base import BoundaryPostProcessor
 
 
-class BoundaryToLengthProcessor(PostProcessor):
+class BoundaryToLengthProcessor(BoundaryPostProcessor):
     def process(
         self,
         boundaries: list[int],

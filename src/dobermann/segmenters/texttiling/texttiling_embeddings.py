@@ -5,9 +5,9 @@ from dobermann.embeddings import Embedder
 from dobermann.segmenters.abstract import SegmentationResult, Segmenter
 
 from .boundaries import BoundaryDetector
-from .postprocessor import PostProcessor  # needs better naming
+from .postprocessor import BoundaryPostProcessor
 from .similarity import Similarity
-from .smoothing import Smoother
+from .smoothing import SignalSmoother
 
 
 class TextTilingEmbeddings(Segmenter):
@@ -32,9 +32,9 @@ class TextTilingEmbeddings(Segmenter):
         self,
         embedder: Embedder,
         similarity: Similarity,
-        smoother: Smoother,
+        smoother: SignalSmoother,
         boundary: BoundaryDetector,
-        postprocessor: PostProcessor,
+        postprocessor: BoundaryPostProcessor,
     ):
         self.embedder = embedder
         self.similarity = similarity

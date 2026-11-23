@@ -1,7 +1,7 @@
-from .base import Smoother
+from .base import SignalSmoother
 from .moving_average import MovingAverageSmoother
 
 __all__ = [
-    "Smoother",
+    "SignalSmoother",
     "MovingAverageSmoother",
 ]

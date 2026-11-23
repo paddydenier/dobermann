@@ -19,15 +19,15 @@ from .segmenters.texttiling.boundaries import (
     BoundaryDetector,
 )
 from .segmenters.texttiling.postprocessor import (
+    BoundaryPostProcessor,
     BoundaryToLengthProcessor,
-    PostProcessor,
 )
 
 # import similarity
 from .segmenters.texttiling.similarity import CosineSimilarity, Similarity
 
 # import smoothing
-from .segmenters.texttiling.smoothing import MovingAverageSmoother, Smoother
+from .segmenters.texttiling.smoothing import MovingAverageSmoother, SignalSmoother
 
 __all__ = [
     "Document",
@@ -40,12 +40,12 @@ __all__ = [
     "SentenceTransformerEmbedder",
     "Embedder",
     "MovingAverageSmoother",
-    "Smoother",
+    "SignalSmoother",
     "Similarity",
     "CosineSimilarity",
     "AdaptiveValleyBoundaryDetector",
     "BoundaryDetector",
-    "PostProcessor",
+    "BoundaryPostProcessor",
     "BoundaryToLengthProcessor",
     "SimilarityMatrix",
     "CosineSimilarityMatrix",
