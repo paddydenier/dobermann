@@ -1,7 +1,7 @@
-from .base import PostProcessor
+from .base import LabelPostProcessor
 from .labels_to_segments import LabelsToSegmentsPostProcessor
 
 __all__ = [
-    "PostProcessor",
+    "LabelPostProcessor",
     "LabelsToSegmentsPostProcessor",
 ]

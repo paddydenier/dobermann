@@ -1,10 +1,10 @@
 import numpy as np
 from scipy.ndimage import uniform_filter1d
 
-from .base import Smoother
+from .base import SignalSmoother
 
 
-class MovingAverageSmoother(Smoother):
+class MovingAverageSmoother(SignalSmoother):
     def __init__(self, window_size: int = 2):
         self.window_size = window_size
 

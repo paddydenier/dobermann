@@ -1,5 +1,5 @@
 from .base import SimilarityMatrix
-from .cosine_sim import CosineSimilarityMatrix
+from .cosine import CosineSimilarityMatrix
 
 __all__ = [
     "SimilarityMatrix",

@@ -4,14 +4,14 @@ Segmenters
 TextTilingEmbeddings
 --------------------
 
-.. autoclass:: dobermann.TextTilingEmbeddings
+.. autoclass:: dobermann.segmenters.texttiling.TextTilingEmbeddings
    :members:
    :inherited-members:
 
 GraphSegEmbeddings
 ------------------
 
-.. autoclass:: dobermann.GraphSegEmbeddings
+.. autoclass:: dobermann.segmenters.graphseg.GraphSegEmbeddings
    :members:
    :inherited-members:
 

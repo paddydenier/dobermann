@@ -1,6 +1,6 @@
 from dobermann.embeddings import Embedder, SentenceTransformerEmbedder
 from dobermann.preprocessors import IdentityPreProcessor, PreProcessor
-from dobermann.segmenters.abstract import SegmentationResult, Segmenter
+from dobermann.segmenters.base import SegmentationResult, Segmenter
 
 from .community import GreedyModularityCommunityDetector
 from .graph import WeightedGraphBuilder
@@ -23,16 +23,24 @@ class GraphSeg(Segmenter):
         self.algorithm = algorithm
 
     @classmethod
-    def default(cls, *, embedder: Embedder | None = None) -> "GraphSeg":
+    def default(
+        cls,
+        input_processor: PreProcessor | None = None,
+        *,
+        embedder: Embedder | None = None,
+    ) -> "GraphSeg":
         """Create GraphSeg with the default pipeline.
 
         Args:
+            input_processor: Preprocessor applied to the input before
+                segmentation. Defaults to `IdentityPreProcessor`.
             embedder: Embedder that turns sentences into vectors. Defaults to
                 a new `SentenceTransformerEmbedder.default()`, which loads its
                 own model. Passing the same embedder to several segmenters
                 shares one model between them.
         """
-        input_processor = IdentityPreProcessor()
+        if input_processor is None:
+            input_processor = IdentityPreProcessor()
         if embedder is None:
             embedder = SentenceTransformerEmbedder.default()
 

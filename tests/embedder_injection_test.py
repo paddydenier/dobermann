@@ -61,13 +61,31 @@ def test_default_uses_injected_embedder(facade):
     assert sum(result.segment_lengths) == len(SENTENCES)
 
 
-def test_texttiling_default_accepts_input_processor_and_embedder():
+@pytest.mark.parametrize("facade", FACADES, ids=FACADE_IDS)
+def test_default_accepts_input_processor_and_embedder(facade):
     embedder = FakeEmbedder()
     input_processor = IdentityPreProcessor()
-    segmenter = TextTiling.default(input_processor, embedder=embedder)
+    segmenter = facade.default(input_processor, embedder=embedder)
 
     assert segmenter.input_processor is input_processor
     assert segmenter.algorithm.embedder is embedder
+
+
+@pytest.mark.parametrize("facade", FACADES, ids=FACADE_IDS)
+def test_default_accepts_input_processor_by_keyword(facade):
+    input_processor = IdentityPreProcessor()
+    segmenter = facade.default(input_processor=input_processor, embedder=FakeEmbedder())
+
+    assert segmenter.input_processor is input_processor
+    result = segmenter.segment(SENTENCES)
+    assert sum(result.segment_lengths) == len(SENTENCES)
+
+
+@pytest.mark.parametrize("facade", FACADES, ids=FACADE_IDS)
+def test_default_input_processor_is_identity(facade):
+    segmenter = facade.default(embedder=FakeEmbedder())
+
+    assert isinstance(segmenter.input_processor, IdentityPreProcessor)
 
 
 def test_segmenters_share_one_embedder():

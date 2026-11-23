@@ -2,12 +2,12 @@ import logging
 import time
 
 from dobermann.embeddings import Embedder
-from dobermann.segmenters.abstract import SegmentationResult, Segmenter
+from dobermann.segmenters.base import SegmentationResult, Segmenter
 
 from .boundaries import BoundaryDetector
-from .postprocessor import PostProcessor  # needs better naming
+from .postprocessor import BoundaryPostProcessor
 from .similarity import Similarity
-from .smoothing import Smoother
+from .smoothing import SignalSmoother
 
 
 class TextTilingEmbeddings(Segmenter):
@@ -32,15 +32,15 @@ class TextTilingEmbeddings(Segmenter):
         self,
         embedder: Embedder,
         similarity: Similarity,
-        smoother: Smoother,
+        smoother: SignalSmoother,
         boundary: BoundaryDetector,
-        post_procesor: PostProcessor,
+        postprocessor: BoundaryPostProcessor,
     ):
         self.embedder = embedder
         self.similarity = similarity
         self.smoother = smoother
         self.boundary = boundary
-        self.post_procesor = post_procesor
+        self.postprocessor = postprocessor
         from transformers import logging as hf_logging
 
         logging.getLogger("sentence_transformers").setLevel(logging.ERROR)
@@ -54,7 +54,7 @@ class TextTilingEmbeddings(Segmenter):
         smoothed = self.smoother.smooth(similarities)
         boundaries = self.boundary.boundaries(smoothed)
 
-        segment_lengths = self.post_procesor.process(boundaries, len(sentences))
+        segment_lengths = self.postprocessor.process(boundaries, len(sentences))
 
         end = time.perf_counter()
         runtime = end - start

@@ -1,37 +1,4 @@
-from .abstract import SegmentationResult
-from .graphseg import (
-    CosineSimilarityMatrix,
-    GraphBuilder,
-    GraphSeg,
-    GraphSegEmbeddings,
-    SimilarityMatrix,
-    WeightedGraphBuilder,
-)
-from .texttiling import (
-    AdaptiveValleyBoundaryDetector,
-    BoundaryDetector,
-    BoundaryToLengthProcessor,
-    MovingAverageSmoother,
-    PostProcessor,
-    Smoother,
-    TextTiling,
-    TextTilingEmbeddings,
-)
-
-__all__ = [
-    "TextTilingEmbeddings",
-    "GraphSegEmbeddings",
-    "SegmentationResult",
-    "Smoother",
-    "MovingAverageSmoother",
-    "BoundaryDetector",
-    "AdaptiveValleyBoundaryDetector",
-    "PostProcessor",
-    "BoundaryToLengthProcessor",
-    "TextTiling",
-    "SimilarityMatrix",
-    "CosineSimilarityMatrix",
-    "GraphBuilder",
-    "WeightedGraphBuilder",
-    "GraphSeg",
-]
+# Namespace for the segmentation algorithms. Import the facades from
+# `dobermann` and the algorithm stages from `dobermann.segmenters.texttiling`
+# or `dobermann.segmenters.graphseg`.
+__all__: list[str] = []

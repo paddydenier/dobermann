@@ -1,7 +1,7 @@
-from .base import PostProcessor
+from .base import LabelPostProcessor
 
 
-class LabelsToSegmentsPostProcessor(PostProcessor):
+class LabelsToSegmentsPostProcessor(LabelPostProcessor):
     """Convert contiguous labels into segment lengths."""
 
     def process(self, labels: list[int]) -> list[int]:

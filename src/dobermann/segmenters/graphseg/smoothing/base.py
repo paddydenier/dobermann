@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 
-class Smoother(ABC):
+class LabelSmoother(ABC):
     @abstractmethod
     def smooth(
         self,

@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 
-class PostProcessor(ABC):
+class BoundaryPostProcessor(ABC):
     @abstractmethod
     def process(
         self,
