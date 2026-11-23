@@ -380,6 +380,10 @@ dev = [
 docs = [
     { name = "sphinx" },
 ]
+server = [
+    { name = "fastapi" },
+    { name = "uvicorn", extra = ["standard"] },
+]
 
 [package.metadata]
 requires-dist = [
@@ -403,6 +407,10 @@ dev = [
     { name = "uvicorn", extras = ["standard"], specifier = ">=0.52.1" },
 ]
 docs = [{ name = "sphinx", specifier = ">=9.1.0" }]
+server = [
+    { name = "fastapi", specifier = ">=0.141.1" },
+    { name = "uvicorn", extras = ["standard"], specifier = ">=0.52.1" },
+]
 
 [[package]]
 name = "docutils"
