@@ -1,4 +1,4 @@
-from dobermann.embeddings import SentenceTransformerEmbedder
+from dobermann.embeddings import Embedder, SentenceTransformerEmbedder
 from dobermann.preprocessors import IdentityPreProcessor, PreProcessor
 from dobermann.segmenters.abstract import SegmentationResult, Segmenter
 
@@ -23,15 +23,21 @@ class GraphSeg(Segmenter):
         self.algorithm = algorithm
 
     @classmethod
-    def default(cls) -> "GraphSeg":
-        input_processor = IdentityPreProcessor()
+    def default(cls, *, embedder: Embedder | None = None) -> "GraphSeg":
+        """Create GraphSeg with the default pipeline.
 
-        from sentence_transformers import SentenceTransformer
+        Args:
+            embedder: Embedder that turns sentences into vectors. Defaults to
+                a new `SentenceTransformerEmbedder.default()`, which loads its
+                own model. Passing the same embedder to several segmenters
+                shares one model between them.
+        """
+        input_processor = IdentityPreProcessor()
+        if embedder is None:
+            embedder = SentenceTransformerEmbedder.default()
 
         algorithm = GraphSegEmbeddings(
-            embedder=SentenceTransformerEmbedder(
-                SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
-            ),
+            embedder=embedder,
             similarity=CosineSimilarityMatrix(),
             graph=WeightedGraphBuilder(),
             community_detector=GreedyModularityCommunityDetector(),

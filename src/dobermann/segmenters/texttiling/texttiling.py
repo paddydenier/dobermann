@@ -1,4 +1,4 @@
-from dobermann.embeddings import SentenceTransformerEmbedder
+from dobermann.embeddings import Embedder, SentenceTransformerEmbedder
 from dobermann.preprocessors import IdentityPreProcessor, PreProcessor
 from dobermann.segmenters.abstract import SegmentationResult, Segmenter
 
@@ -24,16 +24,26 @@ class TextTiling(Segmenter):
     def default(
         cls,
         input_processor: PreProcessor | None = None,
+        *,
+        embedder: Embedder | None = None,
     ) -> "TextTiling":
+        """Create TextTiling with the default pipeline.
+
+        Args:
+            input_processor: Preprocessor applied to the input before
+                segmentation. Defaults to `IdentityPreProcessor`.
+            embedder: Embedder that turns sentences into vectors. Defaults to
+                a new `SentenceTransformerEmbedder.default()`, which loads its
+                own model. Passing the same embedder to several segmenters
+                shares one model between them.
+        """
         if input_processor is None:
             input_processor = IdentityPreProcessor()
-
-        from sentence_transformers import SentenceTransformer
+        if embedder is None:
+            embedder = SentenceTransformerEmbedder.default()
 
         algorithm = TextTilingEmbeddings(
-            embedder=SentenceTransformerEmbedder(
-                SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
-            ),
+            embedder=embedder,
             similarity=CosineSimilarity(),
             smoother=MovingAverageSmoother(),
             boundary=AdaptiveValleyBoundaryDetector(),
