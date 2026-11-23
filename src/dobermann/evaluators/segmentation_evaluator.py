@@ -2,8 +2,7 @@ import time
 from dataclasses import dataclass
 
 import numpy as np
-from nltk.metrics import ghd as ghd
-from nltk.metrics import pk as pk
+from nltk.metrics import ghd, pk
 from nltk.metrics import windowdiff as wd
 
 # NOTE: only set k window size if segment lengths are highly variable
