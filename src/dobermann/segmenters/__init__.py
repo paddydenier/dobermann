@@ -1,4 +1,4 @@
-from .abstract import SegmentationResult
+from .base import SegmentationResult
 from .graphseg import (
     CosineSimilarityMatrix,
     GraphBuilder,

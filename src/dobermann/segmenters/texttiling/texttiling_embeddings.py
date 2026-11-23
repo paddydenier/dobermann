@@ -2,7 +2,7 @@ import logging
 import time
 
 from dobermann.embeddings import Embedder
-from dobermann.segmenters.abstract import SegmentationResult, Segmenter
+from dobermann.segmenters.base import SegmentationResult, Segmenter
 
 from .boundaries import BoundaryDetector
 from .postprocessor import BoundaryPostProcessor

@@ -62,7 +62,7 @@ select = ["E4", "E7", "E9", "F", "PLW1514", "I", "TID251", "TID252"]
 ban-relative-imports = "parents"
 
 [tool.ruff.lint.flake8-tidy-imports.banned-api]
-"dobermann.segmenters.abstract".msg = "Import from the public `dobermann` namespace (or `dobermann.segmenters.texttiling` / `.graphseg`) instead."
+"dobermann.segmenters.base".msg = "Import from the public `dobermann` namespace (or `dobermann.segmenters.texttiling` / `.graphseg`) instead."
 "dobermann.segmenters.graphseg.community".msg = "Import from the public `dobermann` namespace (or `dobermann.segmenters.texttiling` / `.graphseg`) instead."
 "dobermann.segmenters.graphseg.graph".msg = "Import from the public `dobermann` namespace (or `dobermann.segmenters.texttiling` / `.graphseg`) instead."
 "dobermann.segmenters.graphseg.labeling".msg = "Import from the public `dobermann` namespace (or `dobermann.segmenters.texttiling` / `.graphseg`) instead."

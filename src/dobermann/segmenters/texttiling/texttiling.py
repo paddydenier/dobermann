@@ -1,6 +1,6 @@
 from dobermann.embeddings import Embedder, SentenceTransformerEmbedder
 from dobermann.preprocessors import IdentityPreProcessor, PreProcessor
-from dobermann.segmenters.abstract import SegmentationResult, Segmenter
+from dobermann.segmenters.base import SegmentationResult, Segmenter
 
 from .boundaries import AdaptiveValleyBoundaryDetector
 from .postprocessor import BoundaryToLengthProcessor
