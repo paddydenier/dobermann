@@ -19,6 +19,11 @@ dependencies = [
     "spacy>=3.8.14",
     "nltk>=3.9.4",
     "sentence-transformers>=5.4.1",
+    "networkx>=3.6.1",
+    "numpy>=2.4.4",
+    "scipy>=1.17.1",
+    "scikit-learn>=1.8.0",
+    "transformers>=5.5.4",
 ]
 
 [build-system]
@@ -32,6 +37,7 @@ dev = [
     "pytest>=9.0.2",
     "ruff>=0.15.8",
     "httpx2>=2.12.0",
+    "deptry>=0.25.1",
 ]
 
 docs = [
@@ -46,3 +52,7 @@ preview = true
 explicit-preview-rules = true
 # ruff defaults, plus enforcing explicit file encodings (preview rule)
 select = ["E4", "E7", "E9", "F", "PLW1514"]
+
+[tool.deptry.per_rule_ignores]
+# spacy is declared but not imported yet; keep/drop decision deferred
+DEP002 = ["spacy"]

@@ -2,7 +2,7 @@ PYTHON := uv run
 SRC := .
 PORT ?= 8000
 
-.PHONY: lint lint-check format format-check test docs docs-readme docs-clean docs-api docs-api-clean backend benchmark benchmark-save benchmark-check release
+.PHONY: lint lint-check format format-check deps-check test docs docs-readme docs-clean docs-api docs-api-clean backend benchmark benchmark-save benchmark-check release
 
 lint:
 	$(PYTHON) ruff check --fix $(SRC)
@@ -15,6 +15,9 @@ format:
 
 format-check:
 	$(PYTHON) ruff format --check $(SRC)
+
+deps-check:
+	$(PYTHON) deptry src
 
 test:
 	$(PYTHON) pytest
