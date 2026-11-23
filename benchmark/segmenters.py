@@ -1,7 +1,6 @@
 from collections.abc import Callable
 
-from dobermann import GraphSeg, TextTiling
-from dobermann.segmenters.abstract import Segmenter
+from dobermann import GraphSeg, Segmenter, TextTiling
 
 SEGMENTERS: dict[str, Callable[[], Segmenter]] = {
     "text_tiling": TextTiling.default,

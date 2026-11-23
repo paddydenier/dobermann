@@ -3,8 +3,7 @@ from typing import Annotated
 
 from fastapi import Body, Depends, FastAPI, HTTPException
 
-from dobermann import Document, GraphSeg, TextTiling
-from dobermann.segmenters.abstract import Segmenter
+from dobermann import Document, GraphSeg, Segmenter, TextTiling
 
 app = FastAPI()
 
