@@ -1,10 +1,13 @@
+import logging
 import zlib
 
 import numpy as np
 import pytest
 import sentence_transformers
+import torch
+import transformers.utils
 
-from api.main import get_segmenters
+from api.main import build_segmenters
 from dobermann import (
     Embedder,
     GraphSeg,
@@ -36,8 +39,10 @@ class FakeEmbedder(Embedder):
 class FakeSentenceTransformer:
     """Stands in for the real model so that default() loads nothing."""
 
-    def __init__(self, model_name: str):
+    def __init__(self, model_name: str, device: str | None = None):
         self.model_name = model_name
+        self.requested_device = device
+        self.device = device or "cpu"
 
 
 @pytest.fixture
@@ -108,6 +113,54 @@ def test_default_embedder_is_a_new_model_per_call(fake_model):
     assert first._model.model_name == "sentence-transformers/all-MiniLM-L6-v2"
 
 
+def test_default_embedder_picks_device_automatically(fake_model):
+    embedder = SentenceTransformerEmbedder.default()
+
+    assert embedder._model.requested_device is None
+
+
+def test_default_embedder_passes_device(fake_model):
+    embedder = SentenceTransformerEmbedder.default(device="cpu")
+
+    assert embedder._model.requested_device == "cpu"
+    assert embedder.device == "cpu"
+
+
+def test_default_embedder_rejects_cuda_without_cuda(fake_model, monkeypatch):
+    monkeypatch.setattr(transformers.utils, "is_torch_cuda_available", lambda: False)
+
+    with pytest.raises(ValueError, match="CUDA is not available"):
+        SentenceTransformerEmbedder.default(device="cuda")
+
+
+def test_default_embedder_logs_model_and_device(fake_model, caplog):
+    with caplog.at_level(logging.INFO, logger="dobermann"):
+        SentenceTransformerEmbedder.default(device="cpu")
+
+    assert "sentence-transformers/all-MiniLM-L6-v2" in caplog.text
+    assert "cpu" in caplog.text
+
+
+# Real model: checks that the device reaches sentence-transformers.
+def test_default_embedder_on_cpu():
+    embedder = SentenceTransformerEmbedder.default(device="cpu")
+
+    assert embedder.device == "cpu"
+    assert embedder.embed(SENTENCES).shape[0] == len(SENTENCES)
+
+
+def test_default_embedder_device_is_auto():
+    expected = "cuda:0" if torch.cuda.is_available() else "cpu"
+
+    assert SentenceTransformerEmbedder.default().device == expected
+
+
+@pytest.mark.skipif(torch.cuda.is_available(), reason="CUDA is available")
+def test_default_embedder_cuda_without_cuda_raises():
+    with pytest.raises(ValueError, match="CUDA is not available"):
+        SentenceTransformerEmbedder.default(device="cuda")
+
+
 @pytest.mark.parametrize("facade", FACADES, ids=FACADE_IDS)
 def test_default_without_embedder_builds_its_own(fake_model, facade):
     first = facade.default()
@@ -119,9 +172,8 @@ def test_default_without_embedder_builds_its_own(fake_model, facade):
 
 
 def test_api_segmenters_share_one_embedder():
-    segmenters = get_segmenters()
+    embedder = FakeEmbedder()
+    segmenters = build_segmenters(embedder)
 
-    assert (
-        segmenters["text_tiling"].algorithm.embedder
-        is segmenters["graph_seg"].algorithm.embedder
-    )
+    assert segmenters["text_tiling"].algorithm.embedder is embedder
+    assert segmenters["graph_seg"].algorithm.embedder is embedder
