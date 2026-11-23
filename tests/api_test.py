@@ -1,9 +1,14 @@
+import zlib
+
+import numpy as np
 import pytest
 from fastapi.testclient import TestClient
 
 from api.main import app, get_segmenters
-from dobermann import SegmentationResult
+from dobermann import Embedder, SegmentationResult, SentenceTransformerEmbedder
 
+# Without a `with` block, TestClient skips the lifespan, so no model is
+# loaded. These tests override get_segmenters instead.
 client = TestClient(app)
 
 TEXT = (
@@ -31,6 +36,39 @@ class FakeSegmenter:
             sentences=sentences,
             runtime=0.0,
         )
+
+
+class FakeEmbedder(Embedder):
+    """Returns a deterministic random vector per sentence, without a model."""
+
+    def embed(self, sentences: list[str]) -> np.ndarray:
+        return np.array(
+            [
+                np.random.default_rng(zlib.crc32(s.encode("utf-8"))).random(8)
+                for s in sentences
+            ]
+        )
+
+
+@pytest.fixture
+def fake_default_embedder(monkeypatch):
+    """Replaces SentenceTransformerEmbedder.default() and records its calls."""
+    embedder = FakeEmbedder()
+    calls = []
+
+    def default(device=None):
+        calls.append(device)
+        return embedder
+
+    monkeypatch.setattr(SentenceTransformerEmbedder, "default", staticmethod(default))
+    return embedder, calls
+
+
+@pytest.fixture
+def real_client():
+    """A client that runs the lifespan, so the real model is loaded."""
+    with TestClient(app) as real_client:
+        yield real_client
 
 
 @pytest.fixture
@@ -93,10 +131,26 @@ def test_segment_missing_text(fake_segmenter):
     assert response.status_code == 422
 
 
+def test_segmenters_are_loaded_at_startup(fake_default_embedder):
+    embedder, calls = fake_default_embedder
+
+    with TestClient(app) as startup_client:
+        assert calls == [None]
+        segmenters = app.state.segmenters
+        assert set(segmenters) == {"text_tiling", "graph_seg"}
+        for segmenter in segmenters.values():
+            assert segmenter.algorithm.embedder is embedder
+
+        response = startup_client.post("/segment?algorithm=graph_seg", json=TEXT)
+
+    assert response.status_code == 200
+    assert calls == [None]
+
+
 # Integration: real segmenters, so changes to the library API break these.
 @pytest.mark.parametrize("algorithm", ["text_tiling", "graph_seg"])
-def test_segment_with_default_segmenters(algorithm):
-    response = client.post(f"/segment?algorithm={algorithm}", json=TEXT)
+def test_segment_with_default_segmenters(real_client, algorithm):
+    response = real_client.post(f"/segment?algorithm={algorithm}", json=TEXT)
 
     assert response.status_code == 200
     segments = response.json()["segments"]

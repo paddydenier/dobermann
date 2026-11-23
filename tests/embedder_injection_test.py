@@ -7,7 +7,7 @@ import sentence_transformers
 import torch
 import transformers.utils
 
-from api.main import get_segmenters
+from api.main import build_segmenters
 from dobermann import (
     Embedder,
     GraphSeg,
@@ -172,9 +172,8 @@ def test_default_without_embedder_builds_its_own(fake_model, facade):
 
 
 def test_api_segmenters_share_one_embedder():
-    segmenters = get_segmenters()
+    embedder = FakeEmbedder()
+    segmenters = build_segmenters(embedder)
 
-    assert (
-        segmenters["text_tiling"].algorithm.embedder
-        is segmenters["graph_seg"].algorithm.embedder
-    )
+    assert segmenters["text_tiling"].algorithm.embedder is embedder
+    assert segmenters["graph_seg"].algorithm.embedder is embedder

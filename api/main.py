@@ -1,30 +1,45 @@
-from functools import cache
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
 from typing import Annotated
 
-from fastapi import Body, Depends, FastAPI, HTTPException
+from fastapi import Body, Depends, FastAPI, HTTPException, Request
 
 from dobermann import (
     Document,
+    Embedder,
     GraphSeg,
     Segmenter,
     SentenceTransformerEmbedder,
     TextTiling,
 )
 
-app = FastAPI()
 
-
-@cache
-def get_segmenters() -> dict[str, Segmenter]:
-    """Build the available segmenters once, on first use.
-
-    Both segmenters share one embedder, so the model is loaded only once.
-    """
-    embedder = SentenceTransformerEmbedder.default()
+def build_segmenters(embedder: Embedder) -> dict[str, Segmenter]:
+    """Build the available segmenters around one shared embedder."""
     return {
         "text_tiling": TextTiling.default(embedder=embedder),
         "graph_seg": GraphSeg.default(embedder=embedder),
     }
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI) -> AsyncIterator[None]:
+    """Load the model and segmenters once, before the first request.
+
+    A model that fails to load stops the server at startup instead of
+    failing the first request.
+    """
+    embedder = SentenceTransformerEmbedder.default()
+    app.state.segmenters = build_segmenters(embedder)
+    yield
+
+
+app = FastAPI(lifespan=lifespan)
+
+
+def get_segmenters(request: Request) -> dict[str, Segmenter]:
+    """Return the segmenters loaded at startup."""
+    return request.app.state.segmenters
 
 
 @app.get("/")
