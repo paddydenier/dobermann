@@ -119,6 +119,25 @@ def test_segment_unknown_algorithm(fake_segmenter):
     assert fake_segmenter.calls == []
 
 
+def test_openapi_documents_response_models():
+    schema = client.get("/openapi.json").json()
+
+    def response_schema(path, method, status="200"):
+        content = schema["paths"][path][method]["responses"][status]["content"]
+        return content["application/json"]["schema"]["$ref"].rsplit("/", 1)[-1]
+
+    assert response_schema("/", "get") == "RootResponse"
+    assert response_schema("/health", "get") == "HealthResponse"
+    assert response_schema("/algorithms", "get") == "AlgorithmsResponse"
+    assert response_schema("/segment", "post") == "SegmentResponse"
+    assert response_schema("/segment", "post", "400") == "ErrorResponse"
+
+    models = schema["components"]["schemas"]
+    assert set(models["HealthResponse"]["properties"]) == {"status", "device"}
+    assert set(models["AlgorithmsResponse"]["properties"]) == {"algorithms"}
+    assert set(models["SegmentResponse"]["properties"]) == {"segments"}
+
+
 def test_health():
     app.dependency_overrides[get_embedder] = FakeEmbedder
     try:

@@ -5,6 +5,13 @@ from typing import Annotated
 from fastapi import Body, Depends, FastAPI, HTTPException, Request
 
 from api.config import Settings
+from api.models import (
+    AlgorithmsResponse,
+    ErrorResponse,
+    HealthResponse,
+    RootResponse,
+    SegmentResponse,
+)
 from dobermann import (
     Document,
     Embedder,
@@ -51,30 +58,33 @@ def get_embedder(request: Request) -> SentenceTransformerEmbedder:
 
 
 @app.get("/")
-def root():
-    return {"message": "Dobermann API is running"}
+def root() -> RootResponse:
+    return RootResponse(message="Dobermann API is running")
 
 
 @app.get("/health")
 def health(
     embedder: Annotated[SentenceTransformerEmbedder, Depends(get_embedder)],
-):
-    return {"status": "ok", "device": embedder.device}
+) -> HealthResponse:
+    return HealthResponse(status="ok", device=embedder.device)
 
 
 @app.get("/algorithms")
 def algorithms(
     segmenters: Annotated[dict[str, Segmenter], Depends(get_segmenters)],
-):
-    return {"algorithms": list(segmenters)}
+) -> AlgorithmsResponse:
+    return AlgorithmsResponse(algorithms=list(segmenters))
 
 
-@app.post("/segment")
+@app.post(
+    "/segment",
+    responses={400: {"model": ErrorResponse, "description": "Invalid request"}},
+)
 def segment(
     algorithm: str,
     text: Annotated[str, Body()],
     segmenters: Annotated[dict[str, Segmenter], Depends(get_segmenters)],
-):
+) -> SegmentResponse:
     if algorithm not in segmenters:
         raise HTTPException(
             status_code=400,
@@ -94,4 +104,4 @@ def segment(
 
     result = segmenters[algorithm].segment(document.sentences)
 
-    return {"segments": [" ".join(segment) for segment in result.segments]}
+    return SegmentResponse(segments=[" ".join(segment) for segment in result.segments])
