@@ -12,10 +12,10 @@ from dobermann.segmenters.graphseg import (
     CommunityLabeler,
     GreedyModularityCommunityDetector,
     Labeler,
+    LabelPostProcessor,
+    LabelSmoother,
     LabelsToSegmentsPostProcessor,
     MajorityVoteSmoother,
-    PostProcessor,
-    Smoother,
 )
 
 HEAVY_MODULES = ("torch", "sentence_transformers", "transformers")
@@ -50,8 +50,8 @@ def test_core_bases_are_exported():
     [
         (CommunityDetector, GreedyModularityCommunityDetector),
         (Labeler, CommunityLabeler),
-        (Smoother, MajorityVoteSmoother),
-        (PostProcessor, LabelsToSegmentsPostProcessor),
+        (LabelSmoother, MajorityVoteSmoother),
+        (LabelPostProcessor, LabelsToSegmentsPostProcessor),
     ],
     ids=lambda cls: cls.__name__,
 )

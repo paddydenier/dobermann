@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 
-class PostProcessor(ABC):
+class LabelPostProcessor(ABC):
     """Abstract interface for postprocessing segmentation results."""
 
     @abstractmethod

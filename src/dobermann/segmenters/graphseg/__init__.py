@@ -3,9 +3,9 @@ from .graph import GraphBuilder, WeightedGraphBuilder
 from .graphseg import GraphSeg
 from .graphseg_embeddings import GraphSegEmbeddings
 from .labeling import CommunityLabeler, Labeler
-from .postprocessor import LabelsToSegmentsPostProcessor, PostProcessor
+from .postprocessor import LabelPostProcessor, LabelsToSegmentsPostProcessor
 from .similarity_matrix import CosineSimilarityMatrix, SimilarityMatrix
-from .smoothing import MajorityVoteSmoother, Smoother
+from .smoothing import LabelSmoother, MajorityVoteSmoother
 
 __all__ = [
     "GraphSegEmbeddings",
@@ -18,8 +18,8 @@ __all__ = [
     "GreedyModularityCommunityDetector",
     "Labeler",
     "CommunityLabeler",
-    "Smoother",
+    "LabelSmoother",
     "MajorityVoteSmoother",
-    "PostProcessor",
+    "LabelPostProcessor",
     "LabelsToSegmentsPostProcessor",
 ]

@@ -7,9 +7,9 @@ from dobermann.segmenters.abstract import SegmentationResult, Segmenter
 from .community import CommunityDetector
 from .graph import GraphBuilder
 from .labeling import Labeler
-from .postprocessor import PostProcessor
+from .postprocessor import LabelPostProcessor
 from .similarity_matrix import SimilarityMatrix
-from .smoothing import Smoother
+from .smoothing import LabelSmoother
 
 
 class GraphSegEmbeddings(Segmenter):
@@ -32,8 +32,8 @@ class GraphSegEmbeddings(Segmenter):
         graph: GraphBuilder,
         community_detector: CommunityDetector,
         labeler: Labeler,
-        smoother: Smoother,
-        postprocessor: PostProcessor,
+        smoother: LabelSmoother,
+        postprocessor: LabelPostProcessor,
     ):
         from transformers import logging as hf_logging
 

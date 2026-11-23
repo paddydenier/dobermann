@@ -1,9 +1,9 @@
 import numpy as np
 
-from .base import Smoother
+from .base import LabelSmoother
 
 
-class MajorityVoteSmoother(Smoother):
+class MajorityVoteSmoother(LabelSmoother):
     def smooth(
         self,
         labels: list[int],
