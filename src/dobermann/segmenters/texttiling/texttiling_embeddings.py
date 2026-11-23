@@ -34,13 +34,13 @@ class TextTilingEmbeddings(Segmenter):
         similarity: Similarity,
         smoother: Smoother,
         boundary: BoundaryDetector,
-        post_procesor: PostProcessor,
+        postprocessor: PostProcessor,
     ):
         self.embedder = embedder
         self.similarity = similarity
         self.smoother = smoother
         self.boundary = boundary
-        self.post_procesor = post_procesor
+        self.postprocessor = postprocessor
         from transformers import logging as hf_logging
 
         logging.getLogger("sentence_transformers").setLevel(logging.ERROR)
@@ -54,7 +54,7 @@ class TextTilingEmbeddings(Segmenter):
         smoothed = self.smoother.smooth(similarities)
         boundaries = self.boundary.boundaries(smoothed)
 
-        segment_lengths = self.post_procesor.process(boundaries, len(sentences))
+        segment_lengths = self.postprocessor.process(boundaries, len(sentences))
 
         end = time.perf_counter()
         runtime = end - start

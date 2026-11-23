@@ -47,7 +47,7 @@ class TextTiling(Segmenter):
             similarity=CosineSimilarity(),
             smoother=MovingAverageSmoother(),
             boundary=AdaptiveValleyBoundaryDetector(),
-            post_procesor=BoundaryToLengthProcessor(),
+            postprocessor=BoundaryToLengthProcessor(),
         )
 
         return cls(
