@@ -1,19 +1,15 @@
 import logging
 import time
 
-from transformers import logging as hf_logging
-
 from dobermann.embeddings import Embedder
-from dobermann.segmenters.graphseg.community.base import CommunityDetector
-from dobermann.segmenters.graphseg.postprocessor import PostProcessor
+from dobermann.segmenters.abstract import SegmentationResult, Segmenter
 
-from ..abstract import SegmentationResult
+from .community import CommunityDetector
 from .graph import GraphBuilder
-from .labeling.base import Labeler
+from .labeling import Labeler
+from .postprocessor import PostProcessor
 from .similarity_matrix import SimilarityMatrix
-from .smoothing.base import Smoother
-
-from ..abstract import Segmenter
+from .smoothing import Smoother
 
 
 class GraphSegEmbeddings(Segmenter):
@@ -39,6 +35,8 @@ class GraphSegEmbeddings(Segmenter):
         smoother: Smoother,
         postprocessor: PostProcessor,
     ):
+        from transformers import logging as hf_logging
+
         logging.getLogger("sentence_transformers").setLevel(logging.ERROR)
         hf_logging.set_verbosity_error()
 

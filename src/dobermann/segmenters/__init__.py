@@ -2,10 +2,10 @@ from .abstract import SegmentationResult
 from .graphseg import (
     CosineSimilarityMatrix,
     GraphBuilder,
+    GraphSeg,
     GraphSegEmbeddings,
     SimilarityMatrix,
     WeightedGraphBuilder,
-    GraphSeg,
 )
 from .texttiling import (
     AdaptiveValleyBoundaryDetector,

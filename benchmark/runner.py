@@ -2,8 +2,7 @@ import sys
 from collections.abc import Iterable, Mapping
 from dataclasses import dataclass
 
-from dobermann import EvaluationResult, SegmentationEvaluator
-from dobermann.segmenters.abstract import Segmenter
+from dobermann import EvaluationResult, SegmentationEvaluator, Segmenter
 
 from .loader import DataHandler
 from .types import DataSet

@@ -1,16 +1,12 @@
-from sentence_transformers import SentenceTransformer
+from dobermann.embeddings import SentenceTransformerEmbedder
+from dobermann.preprocessors import IdentityPreProcessor, PreProcessor
+from dobermann.segmenters.abstract import SegmentationResult, Segmenter
 
-from dobermann.segmenters.abstract import SegmentationResult
-
-from ...embeddings import SentenceTransformerEmbedder
-from ...preprocessors import IdentityPreProcessor, PreProcessor
 from .boundaries import AdaptiveValleyBoundaryDetector
 from .postprocessor import BoundaryToLengthProcessor
 from .similarity import CosineSimilarity
 from .smoothing import MovingAverageSmoother
 from .texttiling_embeddings import TextTilingEmbeddings
-
-from ..abstract import Segmenter
 
 
 class TextTiling(Segmenter):
@@ -31,6 +27,8 @@ class TextTiling(Segmenter):
     ) -> "TextTiling":
         if input_processor is None:
             input_processor = IdentityPreProcessor()
+
+        from sentence_transformers import SentenceTransformer
 
         algorithm = TextTilingEmbeddings(
             embedder=SentenceTransformerEmbedder(
