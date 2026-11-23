@@ -1,5 +1,3 @@
-from sentence_transformers import SentenceTransformer
-
 from dobermann.embeddings import SentenceTransformerEmbedder
 from dobermann.preprocessors import IdentityPreProcessor, PreProcessor
 from dobermann.segmenters.abstract import SegmentationResult, Segmenter
@@ -27,6 +25,8 @@ class GraphSeg(Segmenter):
     @classmethod
     def default(cls) -> "GraphSeg":
         input_processor = IdentityPreProcessor()
+
+        from sentence_transformers import SentenceTransformer
 
         algorithm = GraphSegEmbeddings(
             embedder=SentenceTransformerEmbedder(

@@ -1,8 +1,6 @@
 import logging
 import time
 
-from transformers import logging as hf_logging
-
 from dobermann.embeddings import Embedder
 from dobermann.segmenters.abstract import SegmentationResult, Segmenter
 
@@ -43,6 +41,8 @@ class TextTilingEmbeddings(Segmenter):
         self.smoother = smoother
         self.boundary = boundary
         self.post_procesor = post_procesor
+        from transformers import logging as hf_logging
+
         logging.getLogger("sentence_transformers").setLevel(logging.ERROR)
         hf_logging.set_verbosity_error()
 
