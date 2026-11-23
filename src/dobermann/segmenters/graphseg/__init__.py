@@ -8,12 +8,12 @@ from .similarity_matrix import CosineSimilarityMatrix, SimilarityMatrix
 from .smoothing import LabelSmoother, MajorityVoteSmoother
 
 __all__ = [
+    "GraphSeg",
     "GraphSegEmbeddings",
     "SimilarityMatrix",
     "CosineSimilarityMatrix",
     "GraphBuilder",
     "WeightedGraphBuilder",
-    "GraphSeg",
     "CommunityDetector",
     "GreedyModularityCommunityDetector",
     "Labeler",
