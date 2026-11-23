@@ -335,9 +335,14 @@ name = "dobermann"
 version = "0.3.1"
 source = { editable = "." }
 dependencies = [
+    { name = "networkx" },
     { name = "nltk" },
+    { name = "numpy" },
+    { name = "scikit-learn" },
+    { name = "scipy" },
     { name = "sentence-transformers" },
     { name = "spacy" },
+    { name = "transformers" },
 ]
 
 [package.dev-dependencies]
@@ -354,9 +359,14 @@ docs = [
 
 [package.metadata]
 requires-dist = [
+    { name = "networkx", specifier = ">=3.6.1" },
     { name = "nltk", specifier = ">=3.9.4" },
+    { name = "numpy", specifier = ">=2.4.4" },
+    { name = "scikit-learn", specifier = ">=1.8.0" },
+    { name = "scipy", specifier = ">=1.17.1" },
     { name = "sentence-transformers", specifier = ">=5.4.1" },
     { name = "spacy", specifier = ">=3.8.14" },
+    { name = "transformers", specifier = ">=5.5.4" },
 ]
 
 [package.metadata.requires-dev]

@@ -19,6 +19,11 @@ dependencies = [
     "spacy>=3.8.14",
     "nltk>=3.9.4",
     "sentence-transformers>=5.4.1",
+    "networkx>=3.6.1",
+    "numpy>=2.4.4",
+    "scipy>=1.17.1",
+    "scikit-learn>=1.8.0",
+    "transformers>=5.5.4",
 ]
 
 [build-system]
