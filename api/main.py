@@ -4,6 +4,7 @@ from typing import Annotated
 
 from fastapi import Body, Depends, FastAPI, HTTPException, Request
 
+from api.config import Settings
 from dobermann import (
     Document,
     Embedder,
@@ -24,12 +25,13 @@ def build_segmenters(embedder: Embedder) -> dict[str, Segmenter]:
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
-    """Load the model and segmenters once, before the first request.
+    """Read the settings and load the model once, before the first request.
 
-    A model that fails to load stops the server at startup instead of
-    failing the first request.
+    Invalid settings or a model that fails to load stop the server at
+    startup instead of failing the first request.
     """
-    embedder = SentenceTransformerEmbedder.default()
+    settings = Settings.from_env()
+    embedder = SentenceTransformerEmbedder.default(device=settings.device)
     app.state.segmenters = build_segmenters(embedder)
     yield
 

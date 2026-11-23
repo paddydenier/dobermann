@@ -4,6 +4,7 @@ import numpy as np
 import pytest
 from fastapi.testclient import TestClient
 
+from api.config import Settings
 from api.main import app, get_segmenters
 from dobermann import Embedder, SegmentationResult, SentenceTransformerEmbedder
 
@@ -131,7 +132,8 @@ def test_segment_missing_text(fake_segmenter):
     assert response.status_code == 422
 
 
-def test_segmenters_are_loaded_at_startup(fake_default_embedder):
+def test_segmenters_are_loaded_at_startup(fake_default_embedder, monkeypatch):
+    monkeypatch.delenv("DOBERMANN_DEVICE", raising=False)
     embedder, calls = fake_default_embedder
 
     with TestClient(app) as startup_client:
@@ -145,6 +147,41 @@ def test_segmenters_are_loaded_at_startup(fake_default_embedder):
 
     assert response.status_code == 200
     assert calls == [None]
+
+
+@pytest.mark.parametrize(
+    ("value", "device"),
+    [("auto", None), ("cpu", "cpu"), ("cuda", "cuda"), (" CPU ", "cpu")],
+)
+def test_settings_device(value, device):
+    assert Settings.from_env({"DOBERMANN_DEVICE": value}).device == device
+
+
+def test_settings_device_defaults_to_auto():
+    assert Settings.from_env({}).device is None
+
+
+def test_settings_reject_invalid_device():
+    with pytest.raises(ValueError, match="Invalid DOBERMANN_DEVICE='bogus'"):
+        Settings.from_env({"DOBERMANN_DEVICE": "bogus"})
+
+
+def test_startup_uses_configured_device(fake_default_embedder, monkeypatch):
+    monkeypatch.setenv("DOBERMANN_DEVICE", "cpu")
+    _, calls = fake_default_embedder
+
+    with TestClient(app):
+        assert calls == ["cpu"]
+
+
+def test_startup_fails_on_invalid_device(fake_default_embedder, monkeypatch):
+    monkeypatch.setenv("DOBERMANN_DEVICE", "bogus")
+    _, calls = fake_default_embedder
+
+    with pytest.raises(ValueError, match="expected one of auto, cuda, cpu"):
+        with TestClient(app):
+            pass
+    assert calls == []
 
 
 # Integration: real segmenters, so changes to the library API break these.
