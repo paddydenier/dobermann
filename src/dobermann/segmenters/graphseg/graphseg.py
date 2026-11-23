@@ -1,10 +1,9 @@
 from sentence_transformers import SentenceTransformer
 
-from dobermann.segmenters.abstract import SegmentationResult
+from dobermann.embeddings import SentenceTransformerEmbedder
+from dobermann.preprocessors import IdentityPreProcessor, PreProcessor
+from dobermann.segmenters.abstract import SegmentationResult, Segmenter
 
-from ...embeddings import SentenceTransformerEmbedder
-from ...preprocessors import IdentityPreProcessor, PreProcessor
-from ..abstract import Segmenter
 from .community import GreedyModularityCommunityDetector
 from .graph import WeightedGraphBuilder
 from .graphseg_embeddings import GraphSegEmbeddings

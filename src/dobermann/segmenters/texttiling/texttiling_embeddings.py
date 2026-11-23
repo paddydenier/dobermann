@@ -3,14 +3,13 @@ import time
 
 from transformers import logging as hf_logging
 
-from ...embeddings import Embedder
-from ..abstract import SegmentationResult
+from dobermann.embeddings import Embedder
+from dobermann.segmenters.abstract import SegmentationResult, Segmenter
+
 from .boundaries import BoundaryDetector
 from .postprocessor import PostProcessor  # needs better naming
 from .similarity import Similarity
 from .smoothing import Smoother
-
-from ..abstract import Segmenter
 
 
 class TextTilingEmbeddings(Segmenter):
